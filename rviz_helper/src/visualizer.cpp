@@ -1,5 +1,6 @@
 #include "rviz_helper/visualizer.h"
 
+namespace kr {
 namespace rviz_helper {
 
 TrajectoryVisualizer::TrajectoryVisualizer(const ros::NodeHandle &nh,
@@ -110,3 +111,4 @@ void PoseVisualizer::PublishPose(const geometry_msgs::Pose &pose,
 }
 
 }  // namespace rviz_helper
+}  // namespace kr

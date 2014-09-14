@@ -3,6 +3,7 @@
 
 #include <rviz/helpers/color.h>
 
+namespace kr {
 namespace rviz_helper {
 namespace colors {
 
@@ -15,4 +16,6 @@ const rviz::Color YELLOW = {1, 1, 0};
 
 }  // namespace colors
 }  // namespace rviz_helper
+}  // namespace kr
+
 #endif  // RVIZ_HELPER_COLROS_H_

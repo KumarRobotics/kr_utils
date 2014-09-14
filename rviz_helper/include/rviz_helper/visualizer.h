@@ -13,6 +13,7 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <rviz_helper/colors.h>
 
+namespace kr {
 namespace rviz_helper {
 
 class TrajectoryVisualizer {
@@ -120,5 +121,6 @@ class PoseVisualizer {
 };
 
 }  // namespace rviz_helper
+}  // namespace kr
 
 #endif  // RVIZ_HELPER_VISUALIZER_H_
