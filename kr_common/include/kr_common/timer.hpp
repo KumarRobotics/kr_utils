@@ -10,9 +10,9 @@
 
 namespace kr {
 
-using std::chrono::microseconds;
-using std::chrono::milliseconds;
-using std::chrono::nanoseconds;
+typedef std::chrono::milliseconds ms;
+typedef std::chrono::microseconds us;
+typedef std::chrono::nanoseconds ns;
 
 namespace common {
 
@@ -126,6 +126,10 @@ class Timer {
   D elapsed_{0};
   D total_{0};
 };
+
+typedef Timer<ms> TimerMs;
+typedef Timer<us> TimerUs;
+typedef Timer<ns> TimerNs;
 
 template <typename C>
 void PrintClockData() {

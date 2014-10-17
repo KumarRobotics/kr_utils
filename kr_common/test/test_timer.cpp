@@ -2,9 +2,9 @@
 #include <unistd.h>
 
 int main(int agrc, char** argv) {
-  kr::common::Timer<kr::microseconds> timer("test", "micro");
+  kr::common::TimerUs timer("test", "us");
   timer.Start();
   usleep(800);
   timer.Stop();
-  timer.Report<kr::milliseconds>("ms");
+  timer.Report<kr::ms>("ms");
 }
