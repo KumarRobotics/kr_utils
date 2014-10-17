@@ -2,9 +2,21 @@
 #include <unistd.h>
 
 int main(int agrc, char** argv) {
-  kr::common::TimerUs timer("test", "us");
+  using namespace kr::common;
+
+  std::cout << "system_clock: " << std::endl;
+  PrintClockData<std::chrono::system_clock>();
+  std::cout << "\nhigh_resolution_clock: " << std::endl;
+  PrintClockData<std::chrono::high_resolution_clock>();
+  std::cout << "\nsteady_clock: " << std::endl;
+  PrintClockData<std::chrono::steady_clock>();
+
+  Timer<kr::us> timer("test");
   timer.Start();
   usleep(800);
   timer.Stop();
-  timer.Report<kr::ms>("ms");
+  timer.Report<kr::sec>();
+  timer.Report<kr::ms>();
+  timer.Report<kr::us>();
+  timer.Report<kr::ns>();
 }

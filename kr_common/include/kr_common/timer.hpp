@@ -10,12 +10,63 @@
 
 namespace kr {
 
+// I don't think anyone wants a timer that ticks every hour?
+// Unless you are playing with 10 billions points or something
+typedef std::chrono::minutes min;
+typedef std::chrono::seconds sec;
 typedef std::chrono::milliseconds ms;
 typedef std::chrono::microseconds us;
 typedef std::chrono::nanoseconds ns;
 
 namespace common {
 
+/**
+ * @brief The is_duration struct
+ */
+template <typename>
+struct is_duration : std::false_type {};
+
+template <typename T, typename U>
+struct is_duration<std::chrono::duration<T, U>> : std::true_type {};
+
+/**
+ * @brief Unit
+ * @return unit as a string
+ */
+template <typename T>
+std::string Unit() {
+  return "unknown unit";
+}
+
+template <>
+std::string Unit<min>() {
+  return "min";
+}
+
+template <>
+std::string Unit<sec>() {
+  return "sec";
+}
+
+template <>
+std::string Unit<ms>() {
+  return "ms";
+}
+
+template <>
+std::string Unit<us>() {
+  return "us";
+}
+
+template <>
+std::string Unit<ns>() {
+  return "ns";
+}
+
+/**
+ * @brief Ratio
+ * @return ration of between type T and U
+ */
 template <typename T, typename U>
 double Ratio() {
   typedef typename T::period TP;
@@ -24,12 +75,16 @@ double Ratio() {
   return static_cast<double>(RP::num) / RP::den;
 }
 
+/**
+ * @brief The Timer class
+ */
 template <typename D>
 class Timer {
+  static_assert(is_duration<D>::value, "Not a valid duration type");
+
  public:
-  explicit Timer(const std::string& name, const std::string& unit,
-                 int report_every_n_iter = 0)
-      : name_(name), unit_(unit), report_every_n_iter_(report_every_n_iter) {}
+  explicit Timer(const std::string& name, int report_every_n_iter = 0)
+      : name_(name), report_every_n_iter_(report_every_n_iter) {}
 
   Timer(const Timer&) = delete;
   Timer& operator=(const Timer&) = delete;
@@ -38,7 +93,7 @@ class Timer {
   const std::string& name() const { return name_; }
 
   /**
-   * @brief Start
+   * @brief Start, start timing
    */
   void Start() {
     assert(!running_);
@@ -47,7 +102,7 @@ class Timer {
   }
 
   /**
-   * @brief Stop
+   * @brief Stop, stop timing
    */
   void Stop() {
     assert(running_);
@@ -71,7 +126,7 @@ class Timer {
   }
 
   /**
-   * @brief Min, shortest time duration
+   * @brief Min, shortest time duration recorded
    */
   template <typename T = D>
   double Min() const {
@@ -79,7 +134,7 @@ class Timer {
   }
 
   /**
-   * @brief Max, longest time duration
+   * @brief Max, longest time duration recorded
    */
   template <typename T = D>
   double Max() const {
@@ -95,7 +150,7 @@ class Timer {
   }
 
   /**
-   * @brief Reset
+   * @brief Reset timer
    */
   void Reset() {
     iteration_ = 0;
@@ -107,16 +162,14 @@ class Timer {
    * @param unit_name A string representing the unit
    */
   template <typename T = D>
-  void Report(const std::string& unit_name = "") const {
+  void Report() const {
     std::cout << name_ << " - iterations: " << iteration_
-              << ", unit: " << (unit_name.empty() ? unit_ : unit_name)
-              << ", average: " << Average<T>() << " "
+              << ", unit: " << Unit<T>() << ", average: " << Average<T>() << " "
               << ", min: " << Min<T>() << ", max: " << Max<T>() << std::endl;
   }
 
  private:
   std::string name_{"timer"};
-  std::string unit_{""};
   int iteration_{0};
   int report_every_n_iter_{0};
   bool running_{false};
@@ -127,6 +180,8 @@ class Timer {
   D total_{0};
 };
 
+typedef Timer<min> TimerMin;
+typedef Timer<sec> TimerSec;
 typedef Timer<ms> TimerMs;
 typedef Timer<us> TimerUs;
 typedef Timer<ns> TimerNs;
@@ -139,12 +194,12 @@ void PrintClockData() {
   if (std::ratio_less_equal<P, std::milli>::value) {
     // convert to and print as milliseconds
     typedef typename std::ratio_multiply<P, std::kilo>::type TT;
-    std::cout << std::fixed << static_cast<double>(TT::num) / TT::den
-              << " milliseconds" << std::endl;
+    std::cout << std::fixed << static_cast<double>(TT::num) / TT::den << " ms"
+              << std::endl;
   } else {
     // print as seconds
-    std::cout << std::fixed << static_cast<double>(P::num) / P::den
-              << " seconds" << std::endl;
+    std::cout << std::fixed << static_cast<double>(P::num) / P::den << " sec"
+              << std::endl;
   }
   std::cout << "- is_steady: " << std::boolalpha << C::is_steady << std::endl;
 }
