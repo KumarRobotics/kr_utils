@@ -9,6 +9,11 @@
 #include <iostream>
 
 namespace kr {
+
+using std::chrono::microseconds;
+using std::chrono::milliseconds;
+using std::chrono::nanoseconds;
+
 namespace common {
 
 template <typename T, typename U>
