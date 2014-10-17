@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+    <name>kr_cmake_modules</name>
+    <version>0.0.0</version>
+    <description>The kr_cmake_modules package</description>
+
+    <maintainer email="quchao@seas.upenn.edu">chao</maintainer>
+
+    <license>BSD</license>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <export>
+        <architecture_independent/>
+    </export>
+</package>
