@@ -11,6 +11,14 @@
 namespace kr {
 namespace common {
 
+template <typename T, typename U>
+double Ratio() {
+  typedef typename T::period TP;
+  typedef typename U::period UP;
+  typedef typename std::ratio_divide<TP, UP>::type RP;
+  return static_cast<double>(RP::num) / RP::den;
+}
+
 template <typename D>
 class Timer {
  public:
@@ -42,7 +50,6 @@ class Timer {
         std::chrono::high_resolution_clock::now() - start_);
     total_ += elapsed_;
     ++iteration_;
-    if (iteration_ == 1) max_ = min_ = elapsed_;
     min_ = std::min(elapsed_, min_);
     max_ = std::max(elapsed_, max_);
     running_ = false;
@@ -54,32 +61,32 @@ class Timer {
    * @brief Elapsed, last elapsed time duration
    */
   template <typename T = D>
-  std::chrono::high_resolution_clock::rep Elapsed() const {
-    return std::chrono::duration_cast<T>(elapsed_).count();
+  double Elapsed() const {
+    return elapsed_.count() * Ratio<D, T>();
   }
 
   /**
    * @brief Min, shortest time duration
    */
   template <typename T = D>
-  std::chrono::high_resolution_clock::rep Min() const {
-    return std::chrono::duration_cast<T>(min_).count();
+  double Min() const {
+    return min_.count() * Ratio<D, T>();
   }
 
   /**
    * @brief Max, longest time duration
    */
   template <typename T = D>
-  std::chrono::high_resolution_clock::rep Max() const {
-    return std::chrono::duration_cast<T>(max_).count();
+  double Max() const {
+    return max_.count() * Ratio<D, T>();
   }
 
   /**
    * @brief Average, average time duration
    */
   template <typename T = D>
-  std::chrono::high_resolution_clock::rep Average() const {
-    return std::chrono::duration_cast<T>(total_ / iteration_).count();
+  double Average() const {
+    return total_.count() * Ratio<D, T>() / iteration_;
   }
 
   /**
@@ -109,8 +116,8 @@ class Timer {
   int report_every_n_iter_{0};
   bool running_{false};
   std::chrono::high_resolution_clock::time_point start_;
-  D min_{0};
-  D max_{0};
+  D min_{D::max()};
+  D max_{D::min()};
   D elapsed_{0};
   D total_{0};
 };
