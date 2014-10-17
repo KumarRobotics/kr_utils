@@ -14,4 +14,6 @@ catkin_package(
 
 include_directories(include)
 add_executable(test_timer test/test_timer.cpp)
+add_executable(test_pretty_print test/test_pretty_print.cpp)
+add_executable(test_pretty_printer test/test_pretty_printer.cpp)
 
