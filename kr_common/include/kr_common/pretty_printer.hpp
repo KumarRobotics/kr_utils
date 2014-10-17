@@ -14,7 +14,9 @@
 #include <utility>
 #include <vector>
 
-namespace pp {
+namespace kr {
+namespace common {
+
 template <typename T>
 struct is_container_helper {
   template <typename U>
@@ -275,5 +277,7 @@ struct special_formatter {
   }
 };
 
-}  // namespace pp
+}  // namespace common
+}  // namespace kr
+
 #endif  // PRETTY_PRINTER_HPP_

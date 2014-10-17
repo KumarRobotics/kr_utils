@@ -1,7 +1,7 @@
 #include "kr_common/pretty_printer.hpp"
 
 using namespace std;
-using namespace pp;
+using namespace kr::common;
 
 int main() {
   cout << "Empty vector: ";
