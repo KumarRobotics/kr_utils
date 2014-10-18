@@ -100,9 +100,9 @@ class Timer {
    * @brief Stop, stop timing
    */
   void Stop() {
-    assert(running_);
     elapsed_ = std::chrono::duration_cast<D>(
         std::chrono::high_resolution_clock::now() - start_);
+    assert(running_);
     total_ += elapsed_;
     ++iteration_;
     min_ = std::min(elapsed_, min_);
