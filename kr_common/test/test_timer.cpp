@@ -13,10 +13,11 @@ int main(int agrc, char** argv) {
 
   Timer<kr::us> timer("test");
   timer.Start();
-  usleep(800);
+  usleep(8000);
   timer.Stop();
-  timer.Report<kr::sec>();
+  timer.Report();
+  timer.Start();
+  timer.Sleep<kr::ms>(2);
+  timer.Stop();
   timer.Report<kr::ms>();
-  timer.Report<kr::us>();
-  timer.Report<kr::ns>();
 }

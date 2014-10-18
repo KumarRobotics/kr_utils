@@ -7,12 +7,12 @@
 #include <ostream>
 #include <iomanip>
 #include <iostream>
+#include <thread>
 
 namespace kr {
 
 // I don't think anyone wants a timer that ticks every hour?
 // Unless you are playing with 10 billions points or something
-typedef std::chrono::minutes min;
 typedef std::chrono::seconds sec;
 typedef std::chrono::milliseconds ms;
 typedef std::chrono::microseconds us;
@@ -36,11 +36,6 @@ struct is_duration<std::chrono::duration<T, U>> : std::true_type {};
 template <typename T>
 std::string Unit() {
   return "unknown unit";
-}
-
-template <>
-std::string Unit<min>() {
-  return "min";
 }
 
 template <>
@@ -157,6 +152,12 @@ class Timer {
     running_ = false;
   }
 
+  template <typename T = D>
+  void Sleep(int tick) {
+    T duration(tick);
+    std::this_thread::sleep_for(duration);
+  }
+
   /**
    * @brief Report
    * @param unit_name A string representing the unit
@@ -180,7 +181,6 @@ class Timer {
   D total_{0};
 };
 
-typedef Timer<min> TimerMin;
 typedef Timer<sec> TimerSec;
 typedef Timer<ms> TimerMs;
 typedef Timer<us> TimerUs;
