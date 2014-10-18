@@ -162,10 +162,10 @@ class Timer {
    * @param unit_name A string representing the unit
    */
   template <typename T = D>
-  void Report() const {
-    std::cout << name_ << " - iterations: " << iteration_
-              << ", unit: " << Unit<T>() << ", average: " << Average<T>() << " "
-              << ", min: " << Min<T>() << ", max: " << Max<T>() << std::endl;
+  void Report(std::ostream& os = std::cout) const {
+    os << name_ << " - iterations: " << iteration_ << ", unit: " << Unit<T>()
+       << ", average: " << Average<T>() << " "
+       << ", min: " << Min<T>() << ", max: " << Max<T>() << std::endl;
   }
 
  private:
