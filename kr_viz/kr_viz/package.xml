@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package>
+    <name>kr_viz</name>
+    <version>0.0.1</version>
+    <description>Contains useful RViz plugins</description>
+
+    <maintainer email="quchao@seas.upenn.edu">chao</maintainer>
+    <maintainer email="gcross@seas.upenn.edu">gareth</maintainer>
+
+    <license>Apache2</license>
+
+    <buildtool_depend>catkin</buildtool_depend>
+    <export>
+      <metapackage/>
+    </export>
+</package>
