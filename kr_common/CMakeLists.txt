@@ -5,12 +5,7 @@ add_definitions(-std=c++11 -Wall)
 
 find_package(catkin REQUIRED)
 
-catkin_package(
-    INCLUDE_DIRS include
-    #  LIBRARIES kr_common
-    #  CATKIN_DEPENDS other_catkin_pkg
-    #  DEPENDS system_lib
-    )
+catkin_package(INCLUDE_DIRS include)
 
 include_directories(include)
 add_executable(test_timer test/test_timer.cpp)

@@ -4,10 +4,12 @@
 namespace kr {
 namespace viz {
 
-void CameraViewer::draw() { DrawSpiral(); }
-
-void CameraViewer::init() {
+void CameraViewer::draw() {
+  DrawSpiral();
+  camera_->draw();
 }
+
+void CameraViewer::init() {}
 
 QString CameraViewer::helpString() const {
   QString text("camera viewer");

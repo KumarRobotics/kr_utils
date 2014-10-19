@@ -29,4 +29,5 @@ add_executable(viewer
     )
 target_link_libraries(viewer
     ${QGLVIEWER_LIBRARIES}
+    ${OpenCV_LIBRARIES}
     )
