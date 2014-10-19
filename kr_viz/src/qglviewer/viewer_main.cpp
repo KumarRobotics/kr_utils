@@ -10,8 +10,8 @@ int main(int argc, char** argv) {
   // Instantiate the viewer.
   kr::viz::CameraViewer viewer;
   kr::viz::Camera* cam = new kr::viz::Camera();
+  viewer.addCamera(cam);
 
-  viewer.set_camera(cam);
 
   viewer.setWindowTitle("camera");
 

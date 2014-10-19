@@ -6,7 +6,9 @@ namespace viz {
 
 void CameraViewer::draw() {
   DrawSpiral();
-  camera_->draw();
+  for (const Camera* camera : cameras_) {
+    camera->draw();
+  }
 }
 
 void CameraViewer::init() {}

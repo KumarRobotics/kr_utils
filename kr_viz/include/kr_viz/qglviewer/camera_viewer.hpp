@@ -12,7 +12,7 @@ namespace viz {
 
 class CameraViewer : public QGLViewer {
  public:
-  void set_camera(const Camera* camera) { camera_ = camera; }
+  void addCamera(Camera* camera) { cameras_.push_back(camera); }
 
  protected:
   virtual void draw();
@@ -20,7 +20,7 @@ class CameraViewer : public QGLViewer {
   virtual QString helpString() const;
 
  private:
-  const Camera* camera_{nullptr};
+  std::vector<Camera*> cameras_;
 };
 
 }  // namespace viz

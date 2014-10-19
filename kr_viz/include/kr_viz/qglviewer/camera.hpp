@@ -12,6 +12,7 @@ class Camera : public qglviewer::Camera {
   void set_image(const cv::Mat& image) { image_ = image; }
 
  private:
+  int id_;
   bool display_srt_{false};
   cv::Mat image_;
   cv::Matx33d K_;
