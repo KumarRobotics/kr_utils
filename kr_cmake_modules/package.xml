@@ -6,7 +6,7 @@
 
     <maintainer email="quchao@seas.upenn.edu">chao</maintainer>
 
-    <license>BSD</license>
+    <license>Apache2</license>
 
     <buildtool_depend>catkin</buildtool_depend>
 
