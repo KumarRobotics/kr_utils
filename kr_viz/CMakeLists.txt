@@ -26,6 +26,8 @@ include_directories(
 add_executable(viewer
     src/qglviewer/viewer_main.cpp
     src/qglviewer/camera_viewer.cpp
+    src/qglviewer/camera.cpp
+    src/qglviewer/texture.cpp
     )
 target_link_libraries(viewer
     ${QGLVIEWER_LIBRARIES}
