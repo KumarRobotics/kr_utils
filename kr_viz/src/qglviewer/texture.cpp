@@ -18,7 +18,7 @@ void Texture::setFromCvMat(const cv::Mat& mat) {
   //  check if we need non power of 2 support
   target_ = GL_TEXTURE_2D;
   if (!isPowerOf2(mat.rows) || !isPowerOf2(mat.cols)) {
-    const char * tex_rect = "GL_TEXTURE_RECTANGLE_ARB";
+    const char * tex_rect = "GL_ARB_texture_rectangle";
     if (!gluCheckExtension(reinterpret_cast<const GLubyte*>(&tex_rect[0]), 
                            glGetString(GL_EXTENSIONS))) {
       throw std::runtime_error("Non-pow2 textures are not supported");

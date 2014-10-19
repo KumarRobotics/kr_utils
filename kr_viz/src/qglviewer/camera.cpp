@@ -4,8 +4,8 @@ namespace kr {
 namespace viz {
 
 void Camera::draw(bool drawFarPlane, float scale) const {
-  qglviewer::Camera::draw(drawFarPlane,scale);
-  return; //  let super handle for now
+ // qglviewer::Camera::draw(drawFarPlane,scale);
+ // return; //  let super handle for now
   
   if (image_dirty_) {
     //  need to update the texture
@@ -28,16 +28,16 @@ void Camera::draw(bool drawFarPlane, float scale) const {
   {
     glColor3d(frustumColor_.x,frustumColor_.y,frustumColor_.z);
     
-    glTexCoord2f(0,0);
+    glTexCoord2i(0,0);
     glVertex2f(-1,-1);
     
-    glTexCoord2f(1,0);
+    glTexCoord2i(image_.cols,0);
     glVertex2f(1,-1);
     
-    glTexCoord2f(1,1);
+    glTexCoord2i(image_.cols,image_.rows);
     glVertex2f(1,1);
     
-    glTexCoord2f(0,1);
+    glTexCoord2i(0,image_.rows);
     glVertex2f(-1,1);
   }
   glEnd();
