@@ -10,6 +10,7 @@ int main(int argc, char** argv) {
   // Instantiate the viewer.
   kr::viz::CameraViewer viewer;
   kr::viz::Camera* cam = new kr::viz::Camera();
+  viewer.addCamera(cam);
 
   //  generate simple texture in a cv mat
   cv::Mat dummy(50,100,CV_8UC3);
@@ -24,9 +25,7 @@ int main(int argc, char** argv) {
       rgb.b = static_cast<uchar>(j*255.0 / dummy.cols);
     }
   }
-  cam->set_image(dummy);
-  
-  viewer.set_camera(cam);
+  cam->setImage(dummy);
 
   viewer.setWindowTitle("camera");
 

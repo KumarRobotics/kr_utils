@@ -5,32 +5,32 @@ using namespace kr::common;
 
 int main() {
   cout << "Empty vector: ";
-  print_line(cout, vector<int>());
+  println(cout, vector<int>());
 
   cout << "Empty    set: ";
-  print_line(cout, set<int>());
+  println(cout, set<int>());
 
   cout << "Empty  tuple: ";
-  print_line(cout, tuple<>());
+  println(cout, tuple<>());
 
   cout << "One-element vector: ";
-  print_line(cout, vector<int>(1, 1701));
+  println(cout, vector<int>(1, 1701));
 
   {
     cout << "One-element    set: ";
     set<int> s;
     s.insert(1729);
-    print_line(cout, s);
+    println(cout, s);
   }
 
   {
     cout << "One-element  array: ";
     const int a[] = {2048};
-    print_line(cout, a);
+    println(cout, a);
   }
 
   cout << "One-element  tuple: ";
-  print_line(cout, tuple<int>(4096));
+  println(cout, tuple<int>(4096));
 
   {
     cout << "Multi-element vector: ";
@@ -38,7 +38,7 @@ int main() {
     v.push_back(11);
     v.push_back(22);
     v.push_back(33);
-    print_line(cout, v);
+    println(cout, v);
   }
 
   {
@@ -48,29 +48,29 @@ int main() {
     s.insert(777);
     s.insert(222);
     s.insert(999);
-    print_line(cout, s);
+    println(cout, s);
   }
 
   {
     cout << "Multi-element  array: ";
     const int a[] = {100, 200, 300, 400, 500};
-    print_line(cout, a);
+    println(cout, a);
   }
 
   cout << "  Two-element   pair: ";
-  print_line(cout, make_pair(123, 456));
+  println(cout, make_pair(123, 456));
 
   cout << "Multi-element  tuple: ";
-  print_line(cout, make_tuple(10, 20, 30, 40));
+  println(cout, make_tuple(10, 20, 30, 40));
 
   cout << "          Empty string: ";
-  print_line(cout, string(""));
+  println(cout, string(""));
 
   cout << "  One-character string: ";
-  print_line(cout, string("x"));
+  println(cout, string("x"));
 
   cout << "Multi-character string: ";
-  print_line(cout, string("meow"));
+  println(cout, string("meow"));
 
   cout << "--" << endl;
 
@@ -80,7 +80,7 @@ int main() {
     v.push_back("cute");
     v.push_back("fluffy");
     v.push_back("kittens");
-    print_line(cout, v);
+    println(cout, v);
   }
 
   {
@@ -95,21 +95,21 @@ int main() {
 
       v.push_back(temp);
     }
-    print_line(cout, v);
+    println(cout, v);
 
     cout << "map<string, vector<int>>: ";
     map<string, vector<int>> m;
     m["abc"] = v[0];
     m["def"] = v[1];
     m["ghi"] = v[2];
-    print_line(cout, m);
+    println(cout, m);
   }
 
   {
     cout << "Multi-dimensional array: ";
     const int aa[3][5] = {
         {71, 72, 73, 74, 75}, {81, 82, 83, 84, 85}, {91, 92, 93, 94, 95}};
-    print_line(cout, aa);
+    println(cout, aa);
   }
 
   {
@@ -118,7 +118,7 @@ int main() {
     v.push_back(make_tuple(1, "ten", 100));
     v.push_back(make_tuple(2, "twenty", 200));
     v.push_back(make_tuple(3, "thirty", 300));
-    print_line(cout, v);
+    println(cout, v);
   }
 
   cout << endl << "*** special_formatter: ***" << endl;
@@ -135,7 +135,7 @@ int main() {
     v[2].insert("the");
     v[2].insert("undiscovered");
     v[2].insert("country");
-    print_line(cout, v, special_formatter());
+    println(cout, v, special_formatter());
   }
 
   {
@@ -143,7 +143,7 @@ int main() {
     s.insert(make_pair(11, 22));
     s.insert(make_pair(33, 44));
     s.insert(make_pair(55, 66));
-    print_line(cout, s, special_formatter());
+    println(cout, s, special_formatter());
   }
 
   {
@@ -151,6 +151,6 @@ int main() {
     fl.push_front(123);
     fl.push_front(456);
     fl.push_front(789);
-    print_line(cout, fl, special_formatter());
+    println(cout, fl, special_formatter());
   }
 }

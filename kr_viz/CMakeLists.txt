@@ -4,7 +4,7 @@ project(kr_viz)
 add_definitions(-std=c++11 -Wall)
 
 find_package(catkin REQUIRED COMPONENTS
-    kr_cmake_modules
+    kr_cmake_modules sophus
     )
 find_package(OpenCV REQUIRED)
 find_package(QGLViewer REQUIRED)

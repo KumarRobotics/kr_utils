@@ -221,13 +221,13 @@ void print_container_helper(std::ostream& os, const T& t, std::false_type,
 }
 
 template <typename T>
-void print_line(std::ostream& os, const T& t) {
+void println(std::ostream& os, const T& t) {
   print(os, t);
   os << std::endl;
 }
 
 template <typename T, typename Fmt>
-void print_line(std::ostream& os, const T& t, const Fmt& fmt) {
+void println(std::ostream& os, const T& t, const Fmt& fmt) {
 
   print(os, t, fmt);
   os << std::endl;

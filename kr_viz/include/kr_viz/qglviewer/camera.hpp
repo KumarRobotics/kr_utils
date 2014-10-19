@@ -10,7 +10,7 @@ namespace viz {
 
 class Camera : public qglviewer::Camera {
  public:
-  void set_image(const cv::Mat& image) { 
+  void setImage(const cv::Mat& image) { 
     image_ = image;
     image_dirty_= true;
   }
@@ -25,6 +25,7 @@ class Camera : public qglviewer::Camera {
   void setFrustumColor(const qglviewer::Vec& c) { frustumColor_ = c; }
   
  private:
+  int id_;
   bool display_srt_{false};
   qglviewer::Vec frustumColor_{1,1,1};
   
