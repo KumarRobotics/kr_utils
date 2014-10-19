@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>kr_vision</name>
+  <version>0.0.1</version>
+  <description>The kr_vision package</description>
+
+  <maintainer email="kmohta@seas.upenn.edu">Kartik Mohta</maintainer>
+  <maintainer email="quchao@seas.upenn.edu">Chao Qu</maintainer>
+  <maintainer email="gcross@seas.upenn.edu">Gareth Cross</maintainer>
+  <license>Apache 2</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>kr_math</build_depend>
+  <run_depend>kr_math</run_depend>
+
+  <export>
+  </export>
+</package>
