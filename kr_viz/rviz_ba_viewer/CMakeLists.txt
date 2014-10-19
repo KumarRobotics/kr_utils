@@ -43,6 +43,7 @@ QT4_WRAP_CPP(${PROJECT_NAME}_MOCSrcs ${${PROJECT_NAME}_HEADERS})
 # QT Declarations
 include_directories(
   include
+  ${catkin_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${OpenCV_INCLUDE_DIR}
