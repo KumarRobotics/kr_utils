@@ -161,22 +161,22 @@ void KeyFrameObject::createGeometry() {
     {
       //plane_object_->colour(1.0,0,0,1);
       plane_object_->position(points[0]); //  top left
-      plane_object_->textureCoord(0,1);
-      
-      plane_object_->position(points[1]); //  bottom left
       plane_object_->textureCoord(0,0);
       
-      plane_object_->position(points[2]); //  bottom right
-      plane_object_->textureCoord(1,0);
+      plane_object_->position(points[1]); //  bottom left
+      plane_object_->textureCoord(0,1);
       
       plane_object_->position(points[2]); //  bottom right
-      plane_object_->textureCoord(1,0);
-      
-      plane_object_->position(points[3]); //  top right
       plane_object_->textureCoord(1,1);
       
+      plane_object_->position(points[2]); //  bottom right
+      plane_object_->textureCoord(1,1);
+      
+      plane_object_->position(points[3]); //  top right
+      plane_object_->textureCoord(1,0);
+      
       plane_object_->position(points[0]); //  top left
-      plane_object_->textureCoord(0,1);
+      plane_object_->textureCoord(0,0);
     }
     plane_object_->end();
   }
