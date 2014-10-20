@@ -7,11 +7,10 @@
 #ifndef RVIZ_BA_DISPLAY_H_
 #define RVIZ_BA_DISPLAY_H_
 
+#include <rviz/display.h>
+
 #include <QObject>
 #include <map>
-
-#include <ros/ros.h>
-#include <rviz/display.h>
 
 #include <rviz_ba_viewer/keyframe_object.hpp>
 #include <rviz_ba_viewer/BaGraph.h>   //  generated message
