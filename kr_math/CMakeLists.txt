@@ -26,7 +26,8 @@ install(DIRECTORY include/${PROJECT_NAME}/
 if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(gtest_all test/gtest_all.cpp
     test/SO3_test.cpp
-    test/pose_test.cpp)
+    test/pose_test.cpp
+    )
   target_link_libraries(gtest_all
     ${catkin_LIBRARIES}
     ${GTEST_LIBRARIES})

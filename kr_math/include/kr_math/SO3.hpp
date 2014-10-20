@@ -12,8 +12,8 @@
 /*
  * @brief SO3.hpp Collection of methods useful when operating on SO3
  */
-#ifndef KR_MATH_SO3_H_
-#define KR_MATH_SO3_H_
+#ifndef KR_MATH_SO3_HPP_
+#define KR_MATH_SO3_HPP_
 
 #include <cmath>
 #include "base_types.hpp"
@@ -27,7 +27,8 @@ namespace kr {
  *
  * @note Assumes matrix is of the form: (world) = Rz * Ry * Rx (body).
  */
-template <typename T> kr::vec3<T> getRPY(const kr::mat3<T> &R) {
+template <typename T>
+kr::vec3<T> rotToEulerZYX(const kr::mat3<T>& R) {
   kr::vec3<T> rpy;
 
   T sth = -R(2, 0);
@@ -49,9 +50,9 @@ template <typename T> kr::vec3<T> getRPY(const kr::mat3<T> &R) {
     psi = std::atan2(R(1, 0), R(0, 0));
   }
 
-  rpy[0] = phi;   //  x, [-pi,pi]
-  rpy[1] = theta; //  y, [-pi/2,pi/2]
-  rpy[2] = psi;   //  z, [-pi,pi]
+  rpy[0] = phi;    //  x, [-pi,pi]
+  rpy[1] = theta;  //  y, [-pi/2,pi/2]
+  rpy[2] = psi;    //  z, [-pi,pi]
   return rpy;
 }
 
@@ -61,14 +62,15 @@ template <typename T> kr::vec3<T> getRPY(const kr::mat3<T> &R) {
  * @return 3x3 member of SO(3) corresponding to a CCW rotation
  *   about the x-axis.
  */
-template <typename T> kr::mat3<T> rotation_x(T angle) {
+template <typename T>
+kr::mat3<T> rotX(T angle) {
   const T c = std::cos(angle);
   const T s = std::sin(angle);
 
   kr::mat3<T> R;
 
   R(0, 0) = 1;
-  R(0, 1) = R(0, 2)= 0;
+  R(0, 1) = R(0, 2) = 0;
   R(1, 0) = 0;
   R(1, 1) = c;
   R(1, 2) = -s;
@@ -85,7 +87,8 @@ template <typename T> kr::mat3<T> rotation_x(T angle) {
  * @return 3x3 member of SO(3) corresponding to a CCW rotation
  *   about the y axis.
  */
-template <typename T> kr::mat3<T> rotation_y(T angle) {
+template <typename T>
+kr::mat3<T> rotY(T angle) {
   const T c = std::cos(angle);
   const T s = std::sin(angle);
 
@@ -109,7 +112,8 @@ template <typename T> kr::mat3<T> rotation_y(T angle) {
  * @return 3x3 member of SO(3) corresponding to a CCW rotation
  *   about the z axis.
  */
-template <typename T> kr::mat3<T> rotation_z(T angle) {
+template <typename T>
+kr::mat3<T> rotZ(T angle) {
   const T c = std::cos(angle);
   const T s = std::sin(angle);
 
@@ -135,18 +139,17 @@ template <typename T> kr::mat3<T> rotation_z(T angle) {
  *          [-w1  w3   0]
  */
 template <typename Scalar>
-kr::mat3<Scalar> skewSymmetric(const kr::vec3<Scalar>& w)
-{
+kr::mat3<Scalar> skewSymmetric(const kr::vec3<Scalar>& w) {
   kr::mat3<Scalar> W;
-  W(0,0) = 0;
-  W(0,1) = -w(2);
-  W(0,2) = w(1);
-  W(1,0) = w(2);
-  W(1,1) = 0;
-  W(1,2) = -w(0);  
-  W(2,0) = -w(1);
-  W(2,1) = w(0);
-  W(2,2) = 0;
+  W(0, 0) = 0;
+  W(0, 1) = -w(2);
+  W(0, 2) = w(1);
+  W(1, 0) = w(2);
+  W(1, 1) = 0;
+  W(1, 2) = -w(0);
+  W(2, 0) = -w(1);
+  W(2, 1) = w(0);
+  W(2, 2) = 0;
   return W;
 }
 
@@ -156,18 +159,37 @@ kr::mat3<Scalar> skewSymmetric(const kr::vec3<Scalar>& w)
  *  w ->  S(w)^2
  */
 template <typename Scalar>
-kr::mat3<Scalar> skewSymmetric2(const kr::vec3<Scalar>& w)
-{
+kr::mat3<Scalar> skewSymmetric2(const kr::vec3<Scalar>& w) {
   kr::mat3<Scalar> W2;
-  W2(0,0) = -(w[2]*w[2] + w[1]*w[1]);
-  W2(1,1) = -(w[2]*w[2] + w[0]*w[0]);
-  W2(2,2) = -(w[1]*w[1] + w[0]*w[0]);
-  W2(1,0) = W2(0,1) = w[0]*w[1];
-  W2(2,0) = W2(0,2) = w[0]*w[2];
-  W2(1,2) = W2(2,1) = w[1]*w[2];
+  W2(0, 0) = -(w[2] * w[2] + w[1] * w[1]);
+  W2(1, 1) = -(w[2] * w[2] + w[0] * w[0]);
+  W2(2, 2) = -(w[1] * w[1] + w[0] * w[0]);
+  W2(1, 0) = W2(0, 1) = w[0] * w[1];
+  W2(2, 0) = W2(0, 2) = w[0] * w[2];
+  W2(1, 2) = W2(2, 1) = w[1] * w[2];
   return W2;
 }
 
-} // namespace kr
+/**
+ * @brief rodriguesToQuat Convert rodrigues parameters to quaternion
+ * @return Unit quaternion rerpresenting the same rotation
+ */
+template <typename Scalar>
+Eigen::Quaternion<Scalar> rodriguesToQuat(const kr::vec3<Scalar>& r) {
+  const Scalar r_norm = r.norm();
+  kr::vec3<Scalar> r_normalized(0.0, 0.0, 0.0);
+  if (r_norm > std::numeric_limits<Scalar>::epsilon() * 10) {
+    r_normalized = r / r_norm;
+  }
+  return Eigen::Quaternion<Scalar>(
+      Eigen::AngleAxis<Scalar>(r_norm, r_normalized));
+}
 
-#endif // KR_MATH_SO3_H_
+template <typename Scalar>
+Eigen::Quaternion<Scalar> rodriguesToQuat(Scalar rx, Scalar ry, Scalar rz) {
+  return rodriguesToQuat(kr::vec3<Scalar>(rx, ry, rz));
+}
+
+}  // namespace kr
+
+#endif  // KR_MATH_SO3_HPP_
