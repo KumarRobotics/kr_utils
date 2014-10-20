@@ -57,25 +57,19 @@ public:
                const Ogre::Quaternion& orientation);
   
   /**
-   * @brief Set scale of frustum.
-   * @param scale
-   */
-  void setScale(double scale) { 
-    scale_ = scale; 
-    dirty_ = true;
-  }
-  
-  /**
    * @brief Set color of the frustum.
    * @param color
    */
-  void setColor(const Ogre::Vector4& color) { 
-    color_ = color;
-    dirty_ = true;
-  }
+  void setColor(const Ogre::Vector4& color);
   
   /**
-   * @brief Create objects for rendering, call from update().
+   * @brief Enable or disable image rendering.
+   * @param imageEnabled
+   */
+  void setImageEnabled(bool imageEnabled);
+  
+  /**
+   * @brief Create objects for rendering. Only call from update().
    */
   void createGeometry();
   
@@ -85,8 +79,8 @@ private:
   cv::Mat image_;
   image_geometry::PinholeCameraModel cam_model_;
   float width_{0}, height_{0};
-  double scale_{1};
   Ogre::Vector4 color_{1,1,1,1};
+  bool imageEnabled_{true};
   bool dirty_{true};
   
   /// Ogre objects

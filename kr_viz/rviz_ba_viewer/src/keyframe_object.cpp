@@ -95,13 +95,25 @@ void KeyFrameObject::setPose(const Ogre::Vector3& position,
   scene_node_->setOrientation(orientation);
 }
 
+void KeyFrameObject::setColor(const Ogre::Vector4& color) { 
+  if (color_ != color) {
+    color_ = color;
+    dirty_ = true;
+  }
+}
+
+void KeyFrameObject::setImageEnabled(bool imageEnabled) {
+  if (imageEnabled != imageEnabled_) {
+    imageEnabled_ = imageEnabled;
+    dirty_ = true;
+  }
+}
+
 void KeyFrameObject::createGeometry() {
   if (!dirty_) {
-    //std::cout << "Not dirty, skipping\n";
     return; //  no need to re-create geometry
   }
   dirty_ = false;
-  //std::cout << "KeyFrameObject createGeometry" << std::endl;
   
   const double fx = cam_model_.fx(), fy = cam_model_.fy();
   const double cx = cam_model_.cx(), cy = cam_model_.cy();
@@ -113,7 +125,6 @@ void KeyFrameObject::createGeometry() {
   for (int i=0; i < 4; i++) {
     points[i].x = (points[i].x - cx) / fx;
     points[i].y = (points[i].y - cy) / fy;
-    points[i] *= scale_;
   }
   const Ogre::Vector3 centre(0,0,0);  //  optical centre
   
@@ -140,7 +151,7 @@ void KeyFrameObject::createGeometry() {
   }
   frustum_object_->end();
   
-  if (texture_->isLoaded()) {
+  if (imageEnabled_ && texture_->isLoaded()) {
     //  now the textured quad w/ our image
     //  first set up the material for textured drawing
     Ogre::Pass * pass = material_->getTechnique(0)->getPass(0);
@@ -179,5 +190,8 @@ void KeyFrameObject::createGeometry() {
       plane_object_->textureCoord(0,0);
     }
     plane_object_->end();
+  } else {
+    std::cout << "Shit!\n";
+    plane_object_->clear(); //  lazy: just clear it for now
   }
 }

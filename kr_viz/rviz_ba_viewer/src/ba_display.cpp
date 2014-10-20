@@ -10,6 +10,8 @@
 #include <rviz/properties/int_property.h>
 #include <rviz/properties/property.h>
 #include <rviz/properties/ros_topic_property.h>
+#include <rviz/properties/float_property.h>
+#include <rviz/properties/bool_property.h>
 #include <rviz/display_context.h>
 
 #include <OGRE/OgreSceneNode.h>
@@ -31,10 +33,16 @@ BAGraphDisplay::BAGraphDisplay() : Display() {
       new RosTopicProperty("Topic","",QString::fromStdString(msg_name),
                            "rviz_ba_viewer::BaGraph topic to subscribe to.",
                            this,SLOT(updateTopic()));
-  
   render_every_property_ = 
       new IntProperty("Render Every",1,"Render every n'th keyframe",this,
                       SLOT(updateRenderEvery()));
+  scale_property_ = 
+      new FloatProperty("Frustum Scale", 1, "Depth to image plane (1 = default)",
+                        this,SLOT(updateScale()));
+  
+  image_enabled_property_ = 
+      new BoolProperty("Display images",true,"Display images in keyframes",
+                       this,SLOT(updateImageEnabled()));
 }
 
 BAGraphDisplay::~BAGraphDisplay() {
@@ -60,16 +68,17 @@ void BAGraphDisplay::reset() {
 
 void BAGraphDisplay::update(float,float) {
 
+  //  we will only render every n'th keyframe
   int count=0;
-  int render_every = render_every_property_->getValue().toInt();
+  const int render_every = render_every_property_->getValue().toInt();
+  
   for (std::pair<const int,KeyFrameObject::Ptr>& pair : keyframes_) {
-    //  re-create geometry
-    //  textures are not sent to gpu again
-    //  only dirty key-frames will be re-drawn
     if (count++ % render_every) {
       pair.second->sceneNode()->setVisible(false);
     } else {
       pair.second->createGeometry();
+      pair.second->setImageEnabled(image_enabled_);
+      pair.second->sceneNode()->setScale(Ogre::Vector3(scale_,scale_,scale_));
       pair.second->sceneNode()->setVisible(true);
     }
   }
@@ -120,12 +129,29 @@ void BAGraphDisplay::updateTopic() {
   subscribe();
 }
 
+void BAGraphDisplay::updateScale() {
+  scale_ = scale_property_->getValue().toDouble();
+  if (scale_ < 0.01) {
+    scale_ = 0.01;
+    scale_property_->setValue(QVariant(scale_));  //  apply a minimum
+  }
+  dirty_ = true;
+  ROS_INFO("updateScale");
+}
+
+void BAGraphDisplay::updateImageEnabled() {
+  image_enabled_ = image_enabled_property_->getValue().toBool();
+  dirty_ = true;
+  ROS_INFO("updateImageEnabled");
+}
+
 void BAGraphDisplay::updateRenderEvery() {
   int value = render_every_property_->getValue().toInt();
   if (value < 1) {
     render_every_property_->setValue(QVariant(static_cast<int>(1)));
   }
   dirty_ = true;
+  ROS_INFO("updateRenderEvery");
 }
 
 void BAGraphDisplay::cleanup() {
