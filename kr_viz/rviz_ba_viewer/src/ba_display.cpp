@@ -31,6 +31,10 @@ BAGraphDisplay::BAGraphDisplay() : Display() {
       new RosTopicProperty("Topic","",QString::fromStdString(msg_name),
                            "rviz_ba_viewer::BaGraph topic to subscribe to.",
                            this,SLOT(updateTopic()));
+  
+  render_every_property_ = 
+      new IntProperty("Render Every",1,"Render every n'th keyframe",this,
+                      SLOT(updateRenderEvery()));
 }
 
 BAGraphDisplay::~BAGraphDisplay() {
@@ -55,22 +59,20 @@ void BAGraphDisplay::reset() {
 }
 
 void BAGraphDisplay::update(float,float) {
-//  if (!dirty_) {
-//    //  nothing new to draw
-//    return;
-//  }
-//  dirty_ = false;
-  
-  //ROS_INFO("creating geometry!");
+
   int count=0;
+  int render_every = render_every_property_->getValue().toInt();
   for (std::pair<const int,KeyFrameObject::Ptr>& pair : keyframes_) {
     //  re-create geometry
     //  textures are not sent to gpu again
     //  only dirty key-frames will be re-drawn
-    pair.second->createGeometry();
-    count++;
+    if (count++ % render_every) {
+      pair.second->sceneNode()->setVisible(false);
+    } else {
+      pair.second->createGeometry();
+      pair.second->sceneNode()->setVisible(true);
+    }
   }
-  //ROS_INFO("count: %i", count);
   
   //  transform everything to correct frame
   applyFixedTransform();
@@ -116,6 +118,14 @@ void BAGraphDisplay::updateTopic() {
   unsubscribe();
   cleanup();
   subscribe();
+}
+
+void BAGraphDisplay::updateRenderEvery() {
+  int value = render_every_property_->getValue().toInt();
+  if (value < 1) {
+    render_every_property_->setValue(QVariant(static_cast<int>(1)));
+  }
+  dirty_ = true;
 }
 
 void BAGraphDisplay::cleanup() {

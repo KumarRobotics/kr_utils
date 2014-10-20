@@ -40,11 +40,13 @@ public:
   
 protected slots:
   void updateTopic();
+  void updateRenderEvery();
   
 protected:
   
   /// Properties for the GUI
   RosTopicProperty * topic_property_;
+  IntProperty * render_every_property_;
   
   /// ROS objects
   ros::Subscriber sub_graph_;
