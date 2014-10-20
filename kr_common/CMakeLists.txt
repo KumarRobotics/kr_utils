@@ -3,11 +3,19 @@ project(kr_common)
 
 add_definitions(-std=c++11 -Wall)
 
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+    roscpp
+    )
 
-catkin_package(INCLUDE_DIRS include)
+catkin_package(
+    INCLUDE_DIRS include
+    CATKIN_DEPENDS roscpp
+    )
 
-include_directories(include)
+include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    )
 add_executable(test_timer test/test_timer.cpp)
 add_executable(test_pretty_print test/test_pretty_print.cpp)
 add_executable(test_pretty_printer test/test_pretty_printer.cpp)

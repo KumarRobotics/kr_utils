@@ -9,4 +9,6 @@
     <license>Apache2</license>
 
     <buildtool_depend>catkin</buildtool_depend>
+    <build_depend>roscpp</build_depend>
+    <run_depend>roscpp</run_depend>
 </package>

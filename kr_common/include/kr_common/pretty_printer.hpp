@@ -1,3 +1,8 @@
+/**
+ * pretty_printer.hpp
+ * Author: Stephan T. Lavavej
+ */
+
 #ifndef PRETTY_PRINTER_HPP_
 #define PRETTY_PRINTER_HPP_
 
