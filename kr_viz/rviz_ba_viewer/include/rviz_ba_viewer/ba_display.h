@@ -8,6 +8,7 @@
 #define RVIZ_BA_DISPLAY_H_
 
 #include <QObject>
+#include <map>
 
 #include <ros/ros.h>
 #include <rviz/display.h>
@@ -48,11 +49,19 @@ protected:
   /// ROS objects
   ros::Subscriber sub_graph_;
   
+  /// Display objects
+  std::map<int, KeyFrameObject::Ptr> keyframes_;
+  bool dirty_{false};
+  std::string frame_;
+  
   /// Overrides from Display
   virtual void onEnable();
   virtual void onDisable();
   virtual void subscribe();
   virtual void unsubscribe();
+  
+  /// Apply the fixed-frame transform.
+  void applyFixedTransform();
   
   /// Callback initiated by ROS topic.
   void topicCallback(const rviz_ba_viewer::BaGraphConstPtr&msg);

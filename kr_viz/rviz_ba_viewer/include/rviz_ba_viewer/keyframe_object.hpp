@@ -24,6 +24,7 @@ class ManualObject;
 
 class KeyFrameObject {
 public:
+  typedef std::shared_ptr<KeyFrameObject> Ptr;
   
   KeyFrameObject(Ogre::SceneManager * scene_manager, int id);
   virtual ~KeyFrameObject();

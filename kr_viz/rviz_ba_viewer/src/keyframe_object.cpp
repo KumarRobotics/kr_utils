@@ -37,7 +37,7 @@ KeyFrameObject::KeyFrameObject(Ogre::SceneManager * scene_manager, int id) :
   plane_object_ = scene_manager_->createManualObject();
   scene_node_->attachObject(frustum_object_);
   scene_node_->attachObject(plane_object_);
-  
+    
   //  create a material
   const Ogre::String& group = 
       Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
