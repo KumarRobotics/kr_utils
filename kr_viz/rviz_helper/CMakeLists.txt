@@ -4,17 +4,14 @@ project(rviz_helper)
 add_definitions(-Wall -std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
-    roscpp
-    std_msgs geometry_msgs nav_msgs
-    visualization_msgs
-    tf2_ros
+    roscpp tf2_ros
+    std_msgs geometry_msgs nav_msgs visualization_msgs
     )
 
 catkin_package(
     INCLUDE_DIRS include
     LIBRARIES rviz_helper
     CATKIN_DEPENDS std_msgs geometry_msgs nav_msgs roscpp visualization_msgs tf2_ros
-    DEPENDS system_lib
     )
 
 include_directories(
@@ -23,7 +20,7 @@ include_directories(
     )
 
 add_library(${PROJECT_NAME}
-    src/visualizer.cpp
+    src/marker_visualizer.cpp
     )
 target_link_libraries(${PROJECT_NAME}
     ${catkin_LIBRARIES}
