@@ -13,6 +13,7 @@
 #include <rviz/display_context.h>
 
 #include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreSceneManager.h>
 
 #include <QtGlobal>
 #include <QString>
@@ -53,19 +54,22 @@ void BAGraphDisplay::reset() {
 }
 
 void BAGraphDisplay::update(float,float) {
-  if (!dirty_) {
-    //  nothing new to draw
-    return;
-  }
-  dirty_ = false;
-  ROS_INFO("BAGraphDisplay update");
+//  if (!dirty_) {
+//    //  nothing new to draw
+//    return;
+//  }
+//  dirty_ = false;
   
+  //ROS_INFO("creating geometry!");
+  int count=0;
   for (std::pair<const int,KeyFrameObject::Ptr>& pair : keyframes_) {
     //  re-create geometry
     //  textures are not sent to gpu again
     //  only dirty key-frames will be re-drawn
     pair.second->createGeometry();
+    count++;
   }
+  //ROS_INFO("count: %i", count);
   
   //  transform everything to correct frame
   applyFixedTransform();
@@ -155,6 +159,9 @@ void BAGraphDisplay::applyFixedTransform() {
 void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
   //  update frame
   frame_ = msg->header.frame_id;
+  ROS_INFO_THROTTLE(0.25, "BAGraphDisplay topicCallback");
+  setStatus(StatusProperty::Ok, "Message", 
+            QString("Ok"));
   //  update all the key-frames
   for (const rviz_ba_viewer::KeyFrame& kf : msg->keyframes) {
     std::map<int,KeyFrameObject::Ptr>::iterator ite = keyframes_.find(kf.id);
@@ -164,7 +171,8 @@ void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
       kfo = ite->second;
     } else {
       //  new key-frame to insert
-      kfo.reset(new KeyFrameObject(scene_manager_, kf.id));
+      kfo.reset(new KeyFrameObject(context_->getSceneManager(), kf.id));
+      scene_node_->addChild(kfo->sceneNode());
       keyframes_[kf.id] = kfo;
     }
     
@@ -176,7 +184,8 @@ void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
                  Ogre::Quaternion(q.w,q.x,q.y,q.z));
     
     //  image data is included, convert to cv::Mat
-    if (!kf.image.data.empty()) {      
+    if (!kf.image.data.empty()) {
+      ROS_INFO("Updating image data and camera model");
       cv::Mat rgbMat;
       try {
         auto cv = cv_bridge::toCvCopy(kf.image, "rgb8");
