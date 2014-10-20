@@ -31,6 +31,8 @@ public:
   
   const int& id() const { return id_; }
   
+  Ogre::SceneNode* sceneNode() const { return scene_node_; }
+  
   /**
    * @brief Set camera image.
    * @param image
