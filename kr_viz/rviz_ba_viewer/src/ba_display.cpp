@@ -153,7 +153,8 @@ void BAGraphDisplay::applyFixedTransform() {
 }
 
 void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
-  
+  //  update frame
+  frame_ = msg->header.frame_id;
   //  update all the key-frames
   for (const rviz_ba_viewer::KeyFrame& kf : msg->keyframes) {
     std::map<int,KeyFrameObject::Ptr>::iterator ite = keyframes_.find(kf.id);
@@ -198,3 +199,6 @@ void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
 }
 
 } //  namespace rviz
+
+#include <pluginlib/class_list_macros.h>
+PLUGINLIB_EXPORT_CLASS(rviz::BAGraphDisplay, rviz::Display)

@@ -24,11 +24,7 @@ generate_messages(DEPENDENCIES
   geometry_msgs
 )
 
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS message_runtime
-)
+catkin_package()
 
 set(${PROJECT_NAME}_SOURCES
   src/ba_display.cpp
@@ -51,7 +47,6 @@ include_directories(
   ${OpenCV_INCLUDE_DIR}
   ${Qt4_INCLUDE_DIR}
   /usr/include/OGRE # todo: use find package for this
-  src
 )
 
 add_definitions("-Wall -Wunused -std=c++11")
