@@ -19,6 +19,7 @@
 #include <QString>
 
 #include <cv_bridge/cv_bridge.h>
+#include <opencv2/opencv.hpp>
 
 namespace rviz {
 
@@ -159,7 +160,7 @@ void BAGraphDisplay::applyFixedTransform() {
 void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
   //  update frame
   frame_ = msg->header.frame_id;
-  ROS_INFO_THROTTLE(0.25, "BAGraphDisplay topicCallback");
+  //ROS_INFO_THROTTLE(0.25, "BAGraphDisplay topicCallback");
   setStatus(StatusProperty::Ok, "Message", 
             QString("Ok"));
   //  update all the key-frames
@@ -185,18 +186,22 @@ void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
     
     //  image data is included, convert to cv::Mat
     if (!kf.image.data.empty()) {
-      ROS_INFO("Updating image data and camera model");
+      //ROS_INFO("Updating image data and camera model");
       cv::Mat rgbMat;
+      cv::Mat scaled;
       try {
         auto cv = cv_bridge::toCvCopy(kf.image, "rgb8");
         rgbMat = cv->image;
+        //  shrink down by factor of 4
+        scaled = cv::Mat(rgbMat.rows/4,rgbMat.cols/4,rgbMat.type());
+        cv::resize(rgbMat,scaled,scaled.size());
       } catch (std::exception& e) {
         setStatus(StatusProperty::Warn, "Message", 
                   QString("Failed to extract image in message") + 
                   e.what());
       }
-
-      kfo->setImage(rgbMat);
+      
+      kfo->setImage(scaled);
       
       image_geometry::PinholeCameraModel model;
       model.fromCameraInfo(kf.cinfo);

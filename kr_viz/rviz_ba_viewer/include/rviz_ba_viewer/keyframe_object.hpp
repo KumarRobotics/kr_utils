@@ -95,6 +95,7 @@ private:
   Ogre::ManualObject * frustum_object_;
   Ogre::ManualObject * plane_object_;
   Ogre::TexturePtr     texture_;
+  Ogre::MaterialPtr    frustum_material_;
   Ogre::MaterialPtr    material_;
 };
 
