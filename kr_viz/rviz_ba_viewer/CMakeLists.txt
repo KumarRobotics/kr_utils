@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   rviz
   nav_msgs
   sensor_msgs
+  cv_bridge
 )
 
 add_message_files(DIRECTORY msg)
