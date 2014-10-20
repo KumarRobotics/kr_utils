@@ -47,7 +47,7 @@ class MarkerVisualizer {
   void SetColor(const rviz::Color &color) {
     marker_.color.r = color.r_;
     marker_.color.g = color.g_;
-    marker_.color.r = color.b_;
+    marker_.color.b = color.b_;
   }
 
   /**
@@ -135,6 +135,10 @@ class CovarianceVisualizer : public MarkerVisualizer {
   void PublishCovariance(const nav_msgs::Odometry &odometry);
 };
 
+/**
+ * @brief The PoseVisualizer class
+ * This visualizer will also publish a tf
+ */
 class PoseVisualizer : public TrajectoryVisualizer {
  public:
   PoseVisualizer(const ros::NodeHandle &nh, const std::string &topic = "traj",
