@@ -34,7 +34,7 @@ CovarianceVisualizer::CovarianceVisualizer(const ros::NodeHandle &nh,
   //  default to a beige colour
   SetColor(1, 0.9255, 0.5);
   SetAction(Marker::ADD);
-  SetAction(Marker::SPHERE);
+  SetType(Marker::SPHERE);
   SetLifetime(ros::Duration());  // last forever
 }
 
