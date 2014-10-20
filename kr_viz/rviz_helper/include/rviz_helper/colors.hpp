@@ -1,10 +1,10 @@
-#ifndef RVIZ_HELPER_COLROS_H_
-#define RVIZ_HELPER_COLROS_H_
+#ifndef KR_VIZ_RVIZ_HELPER_COLORS_HPP_
+#define KR_VIZ_RVIZ_HELPER_COLORS_HPP_
 
 #include <rviz/helpers/color.h>
 
 namespace kr {
-namespace rviz_helper {
+namespace viz {
 namespace colors {
 
 const rviz::Color RED = {1, 0, 0};
@@ -15,7 +15,7 @@ const rviz::Color MAGENTA = {1, 0, 1};
 const rviz::Color YELLOW = {1, 1, 0};
 
 }  // namespace colors
-}  // namespace rviz_helper
+}  // namespace viz
 }  // namespace kr
 
-#endif  // RVIZ_HELPER_COLROS_H_
+#endif  // KR_VIZ_RVIZ_HELPER_COLORS_HPP_
