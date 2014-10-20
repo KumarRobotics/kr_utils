@@ -66,6 +66,7 @@ void KeyFrameObject::setImage(const cv::Mat& image) {
   std::cout << "Created texture " << texture_->getName() << "\n";
   std::cout << "Dimensions: " << texture_->getWidth() << ","
             << texture_->getHeight() << std::endl;
+  dirty_ = true;
 }
 
 void KeyFrameObject::setCameraModel(
@@ -74,6 +75,7 @@ void KeyFrameObject::setCameraModel(
   cam_model_ = model;
   width_ = width;
   height_ = height;
+  dirty_ = true;
 }
 
 void KeyFrameObject::setPose(const Ogre::Vector3& position,
@@ -83,6 +85,11 @@ void KeyFrameObject::setPose(const Ogre::Vector3& position,
 }
 
 void KeyFrameObject::createGeometry() {
+  if (!dirty_) {
+    return; //  no need to re-create geometry
+  }
+  dirty_ = false;
+  std::cout << "KeyFrameObject createGeometry" << std::endl;
   
   const double fx = cam_model_.fx(), fy = cam_model_.fy();
   const double cx = cam_model_.cx(), cy = cam_model_.cy();

@@ -58,13 +58,19 @@ public:
    * @brief Set scale of frustum.
    * @param scale
    */
-  void setScale(double scale) { scale_ = scale; }
+  void setScale(double scale) { 
+    scale_ = scale; 
+    dirty_ = true;
+  }
   
   /**
    * @brief Set color of the frustum.
    * @param color
    */
-  void setColor(const Ogre::Vector4& color) { color_ = color; }
+  void setColor(const Ogre::Vector4& color) { 
+    color_ = color;
+    dirty_ = true;
+  }
   
   /**
    * @brief Create objects for rendering, call from update().
@@ -79,6 +85,7 @@ private:
   float width_{0}, height_{0};
   double scale_{1};
   Ogre::Vector4 color_{1,1,1,1};
+  bool dirty_{true};
   
   /// Ogre objects
   Ogre::SceneManager * scene_manager_;

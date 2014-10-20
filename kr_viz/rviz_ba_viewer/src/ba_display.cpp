@@ -17,6 +17,8 @@
 #include <QtGlobal>
 #include <QString>
 
+#include <cv_bridge/cv_bridge.h>
+
 namespace rviz {
 
 BAGraphDisplay::BAGraphDisplay() : Display() {
@@ -59,7 +61,9 @@ void BAGraphDisplay::update(float,float) {
   ROS_INFO("BAGraphDisplay update");
   
   for (std::pair<const int,KeyFrameObject::Ptr>& pair : keyframes_) {
-    //  re-create geometry, textures are not loaded again by this action
+    //  re-create geometry
+    //  textures are not sent to gpu again
+    //  only dirty key-frames will be re-drawn
     pair.second->createGeometry();
   }
   
@@ -150,8 +154,47 @@ void BAGraphDisplay::applyFixedTransform() {
 
 void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
   
+  //  update all the key-frames
+  for (const rviz_ba_viewer::KeyFrame& kf : msg->keyframes) {
+    std::map<int,KeyFrameObject::Ptr>::iterator ite = keyframes_.find(kf.id);
+    KeyFrameObject::Ptr kfo;
+    if (ite != keyframes_.end()) {
+      //  old key-frame to update
+      kfo = ite->second;
+    } else {
+      //  new key-frame to insert
+      kfo.reset(new KeyFrameObject(scene_manager_, kf.id));
+      keyframes_[kf.id] = kfo;
+    }
+    
+    //  update position/orientation
+    //  in this case, dirty_ is not set and the geometry is not rebuilt
+    const geometry_msgs::Point& p = kf.pose.pose.position;
+    const geometry_msgs::Quaternion& q = kf.pose.pose.orientation;
+    kfo->setPose(Ogre::Vector3(p.x,p.y,p.z),
+                 Ogre::Quaternion(q.w,q.x,q.y,q.z));
+    
+    //  image data is included, convert to cv::Mat
+    if (!kf.image.data.empty()) {      
+      cv::Mat rgbMat;
+      try {
+        auto cv = cv_bridge::toCvCopy(kf.image, "rgb8");
+        rgbMat = cv->image;
+      } catch (std::exception& e) {
+        setStatus(StatusProperty::Warn, "Message", 
+                  QString("Failed to extract image in message") + 
+                  e.what());
+      }
+
+      kfo->setImage(rgbMat);
+      
+      image_geometry::PinholeCameraModel model;
+      model.fromCameraInfo(kf.cinfo);
+      kfo->setCameraModel(model,rgbMat.cols,rgbMat.rows);
+    }
+  }
   
-  dirty_ = true;  /// @todo: enable conditionally?
+  dirty_ = true;  //  need to redraw
 }
 
 } //  namespace rviz

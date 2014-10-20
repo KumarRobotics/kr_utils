@@ -15,6 +15,7 @@
 
 #include <rviz_ba_viewer/keyframe_object.hpp>
 #include <rviz_ba_viewer/BaGraph.h>   //  generated message
+#include <rviz_ba_viewer/KeyFrame.h>
 
 namespace rviz {
 
