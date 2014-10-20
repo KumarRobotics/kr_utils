@@ -16,7 +16,7 @@
 
 namespace rviz {
 
-BADisplay::BADisplay() : Display() {
+BAGraphDisplay::BAGraphDisplay() : Display() {
   //  type of message our topic accepts
   const std::string msg_name = 
       ros::message_traits::datatype<rviz_ba_viewer::BaGraph>();
@@ -29,35 +29,35 @@ BADisplay::BADisplay() : Display() {
   
 }
 
-BADisplay::~BADisplay() {
+BAGraphDisplay::~BAGraphDisplay() {
   unsubscribe();
   cleanup();
 }
 
-void BADisplay::onInitialize() {}
+void BAGraphDisplay::onInitialize() {}
 
-void BADisplay::fixedFrameChanged() {
+void BAGraphDisplay::fixedFrameChanged() {
   
 }
 
-void BADisplay::reset() {
+void BAGraphDisplay::reset() {
   
 }
 
-void BADisplay::update(float,float) {
+void BAGraphDisplay::update(float,float) {
   
 }
 
-void BADisplay::onEnable() {
+void BAGraphDisplay::onEnable() {
   subscribe();
 }
 
-void BADisplay::onDisable() {
+void BAGraphDisplay::onDisable() {
   unsubscribe();
   cleanup();
 }
 
-void BADisplay::subscribe() {
+void BAGraphDisplay::subscribe() {
   if (!isEnabled()) {
     return;
   }
@@ -67,7 +67,7 @@ void BADisplay::subscribe() {
     try {
       //  try subscribing to the provided topic
       ROS_INFO("Subscribing to %s", topic.c_str());
-      sub_graph_ = update_nh_.subscribe(topic,1,&BADisplay::topicCallback,this);
+      sub_graph_ = update_nh_.subscribe(topic,1,&BAGraphDisplay::topicCallback,this);
       setStatus(StatusProperty::Ok, "Topic", "Ok");
     }
     catch (ros::Exception &e) {
@@ -77,23 +77,23 @@ void BADisplay::subscribe() {
   }
 }
 
-void BADisplay::unsubscribe() {
+void BAGraphDisplay::unsubscribe() {
   sub_graph_.shutdown();
 }
 
-void BADisplay::updateTopic() {
+void BAGraphDisplay::updateTopic() {
   unsubscribe();
   cleanup();
   subscribe();
 }
 
-void BADisplay::cleanup() {
+void BAGraphDisplay::cleanup() {
   setStatus(StatusProperty::Warn, "Message", "No message received");
   
   // destroy all graphical objects here
 }
 
-void BADisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
+void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
   
   
   

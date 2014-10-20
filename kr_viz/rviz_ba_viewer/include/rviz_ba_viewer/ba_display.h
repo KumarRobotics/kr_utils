@@ -24,12 +24,12 @@ class RosTopicProperty;
 /**
  * @brief RViz plugin for rendering a bundle-adjustment graph.
  */
-class BADisplay : public Display {
+class BAGraphDisplay : public Display {
   Q_OBJECT
 public:
   
-  BADisplay();
-  virtual ~BADisplay();
+  BAGraphDisplay();
+  virtual ~BAGraphDisplay();
   
   /// Overrides from Display
   virtual void onInitialize();
