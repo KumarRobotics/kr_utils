@@ -25,7 +25,7 @@ Ogre::TexturePtr textureFromMat(const cv::Mat& mat, const std::string& name) {
   texture = texture_manager.loadRawData(name, res_group, data_stream,
                                         mat.cols, mat.rows,
                                         Ogre::PF_B8G8R8, Ogre::TEX_TYPE_2D, 0);
-  std::cout << "Created texture with dims: " << mat.cols << "," << mat.rows << "\n";
+  //std::cout << "Created texture with dims: " << mat.cols << "," << mat.rows << "\n";
   return texture;
 }
 
@@ -74,9 +74,9 @@ void KeyFrameObject::setImage(const cv::Mat& image) {
   image_ = image;
   //  also re-create the ogre texture
   texture_ = textureFromMat(image, "kf_tex_" + std::to_string(id_));
-  std::cout << "Created texture " << texture_->getName() << "\n";
-  std::cout << "Dimensions: " << texture_->getWidth() << ","
-            << texture_->getHeight() << std::endl;
+  //std::cout << "Created texture " << texture_->getName() << "\n";
+  //std::cout << "Dimensions: " << texture_->getWidth() << ","
+  //          << texture_->getHeight() << std::endl;
   dirty_ = true;
 }
 
@@ -191,7 +191,6 @@ void KeyFrameObject::createGeometry() {
     }
     plane_object_->end();
   } else {
-    std::cout << "Shit!\n";
     plane_object_->clear(); //  lazy: just clear it for now
   }
 }
