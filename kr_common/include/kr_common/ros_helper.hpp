@@ -14,7 +14,7 @@ template <typename T>
 T GetParam(const ros::NodeHandle& nh, const std::string& param_name,
            const T& default_val) {
   T param_val;
-  nh.param<T>(param_name, param_val, default_val);
+  nh.param<T>(nh.resolveName(param_name), param_val, default_val);
   return param_val;
 }
 
@@ -30,7 +30,7 @@ T GetParam(const ros::NodeHandle& nh, const std::string& param_name) {
 template <typename T>
 T GetParam(const std::string& param_name, const T& default_val) {
   T param_val;
-  ros::param::param<T>(param_name, param_val, default_val);
+  ros::param::param<T>(ros::names::resolve(param_name), param_val, default_val);
   return param_val;
 }
 

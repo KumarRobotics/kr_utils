@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(rviz_ba_viewer)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
 include(${QT_USE_FILE})
 
-# OpenCV
-find_package(OpenCV REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -18,7 +16,9 @@ find_package(catkin REQUIRED COMPONENTS
   kr_cmake_modules
 )
 
-#find_package(Ogre REQUIRED)
+# OpenCV
+find_package(OpenCV REQUIRED)
+find_package(Ogre REQUIRED)
 
 add_message_files(DIRECTORY msg)
 generate_messages(DEPENDENCIES
@@ -49,8 +49,7 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${OpenCV_INCLUDE_DIR}
   ${Qt4_INCLUDE_DIR}
-  /usr/include/OGRE # todo: use find package for this
-  #${Ogre_INCLUDE_DIR}
+  ${QGRE_INCLUDE_DIRS}
 )
 
 add_definitions("-Wall -Wunused -std=c++11")
@@ -74,4 +73,5 @@ target_link_libraries(${PROJECT_NAME}
   ${QT_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${catkin_LIBRARIES}
+  ${OGRE_LIBRARIES}
 )

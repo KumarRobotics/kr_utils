@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   kr_cmake_modules
 )
 
-#find_package(Ogre REQUIRED)
+find_package(Ogre REQUIRED)
 
 add_message_files(DIRECTORY msg)
 generate_messages(DEPENDENCIES
@@ -44,8 +44,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${Qt4_INCLUDE_DIR}
-  /usr/include/OGRE # todo: use find package for this
-  #${Ogre_INCLUDE_DIR}
+  ${QGRE_INCLUDE_DIRS}
 )
 
 add_definitions("-Wall -Wunused -std=c++11")
@@ -68,4 +67,5 @@ add_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${QT_LIBRARIES}
   ${catkin_LIBRARIES}
+  ${OGRE_LIBRARIES}
 )
