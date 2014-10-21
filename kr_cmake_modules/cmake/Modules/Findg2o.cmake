@@ -122,8 +122,9 @@ endif()
 
 # Set standard CMake FindPackage variables if found.
 if(G2O_FOUND)
-    set(G2O_INCLUDE_DIRS ${G2O_INCLUDE_DIR})
+    list(APPEND G2O_INCLUDE_DIRS ${G2O_INCLUDE_DIR} /usr/include/suitesparse)
     file(GLOB G2O_LIBRARIES ${G2O_LIBRARY_DIR}libg2o*)
+    list(APPEND G2O_LIBRARIES ${G2O_LIBRARIES} cholmod cxsparse)
 endif()
 
 # Handle REQUIRED / QUIET optional arguments.
