@@ -55,7 +55,7 @@ private:
   std::vector<std::shared_ptr<rviz::BillboardLine>> lines_; 
   //Ogre::ManualObject * point_object_;
   //Ogre::MaterialPtr point_material_;
-  Ogre::Vector4 color_{0.207,0.247,1,1};
+  Ogre::Vector4 color_{0.0196,0.0196,0.9255,1};
   int id_;
   
   /// Overrides from Display

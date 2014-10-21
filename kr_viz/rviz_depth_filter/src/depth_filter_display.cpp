@@ -66,14 +66,14 @@ void DepthFilterDisplay::createGeometry() {
     std::shared_ptr<rviz::BillboardLine> line;
     line.reset( new rviz::BillboardLine(scene_manager_,scene_node_) );
     line->setColor(color_.x,color_.y,color_.z,color_.w);
-    line->setLineWidth(2);
+    line->setLineWidth(0.025);
     
     //  calculate start and end points
     const geometry_msgs::Point& origin = cloud_.origins[i];
     const geometry_msgs::Point& center = cloud_.positions[i];
     const Ogre::Vector3 o(origin.x,origin.y,origin.z);
     const Ogre::Vector3 c(center.x,center.y,center.z);
-    const double length = cloud_.sigmas[i];
+    const double length = cloud_.sigmas[i]*2; //  do two standard deviations
           
     Ogre::Vector3 minPt, maxPt;
     //  use length to find min/max point
