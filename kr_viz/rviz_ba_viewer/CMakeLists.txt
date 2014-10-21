@@ -15,7 +15,10 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   sensor_msgs
   cv_bridge
+  kr_cmake_modules
 )
+
+#find_package(Ogre REQUIRED)
 
 add_message_files(DIRECTORY msg)
 generate_messages(DEPENDENCIES
@@ -47,6 +50,7 @@ include_directories(
   ${OpenCV_INCLUDE_DIR}
   ${Qt4_INCLUDE_DIR}
   /usr/include/OGRE # todo: use find package for this
+  #${Ogre_INCLUDE_DIR}
 )
 
 add_definitions("-Wall -Wunused -std=c++11")
