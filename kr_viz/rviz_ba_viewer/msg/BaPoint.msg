@@ -1,0 +1,1 @@
+# A feature or point in a bundle-adjustment graph.
