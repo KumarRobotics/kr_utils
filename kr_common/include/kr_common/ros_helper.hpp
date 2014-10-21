@@ -49,12 +49,12 @@ std::string GetPackageFilename(const std::string url) {
   static const std::string pkg_prefix("package://");
   static const size_t prefix_len = pkg_prefix.length();
   size_t rest = url.find('/', prefix_len);
-  std::string package(url.substr(prefix_len, rest - prefix_len));
+  std::string pkg(url.substr(prefix_len, rest - prefix_len));
 
   // Look up the ROS package path name.
-  std::string pkg_path(ros::package::getPath(package));
+  std::string pkg_path(ros::package::getPath(pkg));
   if (pkg_path.empty()) {
-    ROS_WARN_STREAM("unknown package: " << package << " (ignored)");
+    ROS_WARN_STREAM("unknown package: " << pkg << " (ignored)");
     return pkg_path;
   } else {
     return pkg_path + url.substr(rest);
