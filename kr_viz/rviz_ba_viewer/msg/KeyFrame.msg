@@ -15,3 +15,4 @@ sensor_msgs/Image image                # Image seen from this keyframe.
 sensor_msgs/CameraInfo cinfo           # Camera info.
 
 uint32[] point_ids                     # IDs of features visible in this keyframe.
+                                       # Presently unused.

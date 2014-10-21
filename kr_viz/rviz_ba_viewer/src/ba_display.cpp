@@ -72,7 +72,7 @@ void BAGraphDisplay::update(float,float) {
   int count=0;
   const int render_every = render_every_property_->getValue().toInt();
   
-  for (std::pair<const int,KeyFrameObject::Ptr>& pair : keyframes_) {
+  for (std::pair<const int,KeyFrameObject::Ptr>& pair : kf_objects_) {
     if (count++ % render_every) {
       pair.second->sceneNode()->setVisible(false);
     } else {
@@ -157,7 +157,7 @@ void BAGraphDisplay::updateRenderEvery() {
 void BAGraphDisplay::cleanup() {
   setStatus(StatusProperty::Warn, "Message", "No message received");
   // destroy all graphical objects here
-  keyframes_.clear();
+  kf_objects_.clear();
 }
 
 void BAGraphDisplay::applyFixedTransform() {
@@ -196,21 +196,20 @@ void BAGraphDisplay::applyFixedTransform() {
 void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
   //  update frame
   frame_ = msg->header.frame_id;
-  //ROS_INFO_THROTTLE(0.25, "BAGraphDisplay topicCallback");
   setStatus(StatusProperty::Ok, "Message", 
             QString("Ok"));
   //  update all the key-frames
   for (const rviz_ba_viewer::KeyFrame& kf : msg->keyframes) {
-    std::map<int,KeyFrameObject::Ptr>::iterator ite = keyframes_.find(kf.id);
+    std::map<int,KeyFrameObject::Ptr>::iterator ite = kf_objects_.find(kf.id);
     KeyFrameObject::Ptr kfo;
-    if (ite != keyframes_.end()) {
+    if (ite != kf_objects_.end()) {
       //  old key-frame to update
       kfo = ite->second;
     } else {
       //  new key-frame to insert
       kfo.reset(new KeyFrameObject(context_->getSceneManager(), kf.id));
       scene_node_->addChild(kfo->sceneNode());
-      keyframes_[kf.id] = kfo;
+      kf_objects_[kf.id] = kfo;
     }
     
     //  update position/orientation
@@ -222,7 +221,6 @@ void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
     
     //  image data is included, convert to cv::Mat
     if (!kf.image.data.empty()) {
-      //ROS_INFO("Updating image data and camera model");
       cv::Mat rgbMat;
       cv::Mat scaled;
       try {
@@ -244,6 +242,23 @@ void BAGraphDisplay::topicCallback(const rviz_ba_viewer::BaGraphConstPtr& msg) {
       kfo->setCameraModel(model,rgbMat.cols,rgbMat.rows);
     }
   }
+  
+  //  update any points we have been given
+  //  these don't need to be in any particular order
+//  for (const rviz_ba_viewer::BaPoint& point : msg->points) {
+//    //  find the corresponding keyframe
+//    std::map<int,KeyFrame::Ptr>::iterator ite = 
+//        keyframes_.find(point.keyframe_id);
+//    if (ite == keyframes_.end()) {
+//      //  this is invalid, issue a warning
+//      setStatus(StatusProperty::Warn, "Message", 
+//                QString("Graph is incomplete. Some points refer to keyframes") + 
+//                QString(" which do not exist!"));
+//    } else {
+      
+      
+//    }
+//  }
   
   dirty_ = true;  //  need to redraw
 }

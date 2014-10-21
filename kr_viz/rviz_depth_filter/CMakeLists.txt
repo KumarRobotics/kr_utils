@@ -1,20 +1,17 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(rviz_ba_viewer)
+project(rviz_depth_filter)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
 include(${QT_USE_FILE})
 
-# OpenCV
-find_package(OpenCV REQUIRED)
-
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rviz
-  nav_msgs
+  std_msgs
   sensor_msgs
-  cv_bridge
+  geometry_msgs
   kr_cmake_modules
 )
 
@@ -30,12 +27,11 @@ generate_messages(DEPENDENCIES
 catkin_package()
 
 set(${PROJECT_NAME}_SOURCES
-  src/ba_display.cpp
-  src/keyframe_object.cpp
+  src/depth_filter_display.cpp
 )
 
 set(${PROJECT_NAME}_HEADERS
-  include/rviz_ba_viewer/ba_display.h
+  include/rviz_depth_filter/depth_filter_display.h
 )
 
 # invoke MOC and UI
@@ -47,7 +43,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${OpenCV_INCLUDE_DIR}
   ${Qt4_INCLUDE_DIR}
   /usr/include/OGRE # todo: use find package for this
   #${Ogre_INCLUDE_DIR}
@@ -72,6 +67,5 @@ add_dependencies(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   ${QT_LIBRARIES}
-  ${OpenCV_LIBRARIES}
   ${catkin_LIBRARIES}
 )

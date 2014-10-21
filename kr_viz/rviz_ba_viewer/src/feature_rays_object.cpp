@@ -41,15 +41,52 @@ void FeatureRaysObject::setOrigin(const Ogre::Vector3& origin) {
   origin_ = origin;
 }
 
-void FeatureRaysObject::setLines(const std::vector<Ogre::Vector3>& centres,
-                                 const std::vector<double>& lengths) {
+void FeatureRaysObject::setCentres(const std::vector<Ogre::Vector3>& centres) {
   centres_ = centres;
+}
+
+void FeatureRaysObject::setLengths(const std::vector<double>& lengths) {
   lengths_ = lengths;
+}
+
+void FeatureRaysObject::setDrawsLengths(bool draws_lengths) {
+  draws_lengths_ = draws_lengths;
 }
 
 void FeatureRaysObject::createGeometry() {
   /// @todo: add dirty flag to check
   
+  //  only use lengths when rendering if we have the right number
+  const bool draw_lengths = draws_lengths_ && 
+      (centres_.size() == lengths_.size());
   
-  
+  lines_object_->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAIN);
+  lines_object_->begin(lines_material_->getName(),
+                       Ogre::RenderOperation::OT_LINE_LIST);
+  {
+    const size_t N = centres_.size();
+    for (size_t i=0; i < N; i++) {
+      const Ogre::Vector3& c = centres_[i];
+      Ogre::Vector3 minPt, maxPt;
+      
+      if (draw_lengths) {
+        //  use length to find min/max point
+        const double& len = lengths_[i];
+        Ogre::Vector3 n = c - origin_;
+        n.normalise();
+        minPt = c - n*len;
+        maxPt = c + n*len;
+      } else {
+        //  simply draw from origin to the point
+        minPt = origin_;
+        maxPt = c;
+      }
+      
+      //  add a line segment
+      lines_object_->position(minPt);
+      lines_object_->position(maxPt);
+      lines_object_->colour(color_.x,color_.y,color_.z,color_.w);
+    }
+  }
+  lines_object_->end();
 }

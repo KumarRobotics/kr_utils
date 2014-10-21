@@ -13,8 +13,10 @@
 #include <map>
 
 #include <rviz_ba_viewer/keyframe_object.hpp>
+#include <rviz_ba_viewer/feature_rays_object.hpp>
 #include <rviz_ba_viewer/BaGraph.h>   //  generated message
 #include <rviz_ba_viewer/KeyFrame.h>
+#include <rviz_ba_viewer/BaPoint.h>
 
 namespace rviz {
 
@@ -57,8 +59,18 @@ protected:
   /// ROS objects
   ros::Subscriber sub_graph_;
   
+  /// Graph objects
+  /// @todo: as this plugin scales up, this should be probably refactored into a 
+  /// proper class
+  struct KeyFrame {
+    typedef std::shared_ptr<KeyFrame> Ptr;
+    std::map<int, rviz_ba_viewer::BaPoint> points;
+  };
+  std::map<int, KeyFrame::Ptr> keyframes_;
+  
   /// Display objects
-  std::map<int, KeyFrameObject::Ptr> keyframes_;
+  std::map<int, KeyFrameObject::Ptr> kf_objects_;
+  std::map<int, FeatureRaysObject::Ptr> rays_;
   bool dirty_{false};
   double scale_{1};
   bool image_enabled_{true};
