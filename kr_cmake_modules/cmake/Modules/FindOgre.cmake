@@ -62,12 +62,16 @@ list(APPEND OGRE_CHECK_INCLUDE_DIRS
     /usr/local/homebrew/include # Mac OS X
     /opt/local/var/macports/software # Mac OS X.
     /opt/local/include
-    /usr/include)
+    /usr/include/x86_64-linux-gnu
+    /usr/include
+    )
 list(APPEND OGRE_CHECK_LIBRARY_DIRS
     /usr/local/lib
     /usr/local/homebrew/lib # Mac OS X.
     /opt/local/lib
-    /usr/lib)
+    /usr/lib/x86_64-linux-gnu
+    /usr/lib
+    )
 
 # Check general hints
 if(OGRE_HINTS AND EXISTS ${OGRE_HINTS})
@@ -75,7 +79,7 @@ if(OGRE_HINTS AND EXISTS ${OGRE_HINTS})
     set(OGRE_LIBRARY_DIR_HINTS ${OGRE_HINTS}/lib)
 endif()
 
-set(OGRE_INCLUDE_FILE Ogre/config.h)
+set(OGRE_INCLUDE_FILE OGRE/Ogre.h)
 # Search supplied hint directories first if supplied.
 find_path(OGRE_INCLUDE_DIR
     NAMES ${OGRE_INCLUDE_FILE}
@@ -84,17 +88,17 @@ find_path(OGRE_INCLUDE_DIR
     NO_DEFAULT_PATH)
 if(NOT OGRE_INCLUDE_DIR OR NOT EXISTS ${OGRE_INCLUDE_DIR})
 OGRE_REPORT_NOT_FOUND("Could not find Ogre include directory, "
-    "set OGRE_INCLUDE_DIR to directory containing Ogre/config.h")
+    "set OGRE_INCLUDE_DIR to directory containing OGRE/Ogre.h")
 endif()
 
 find_library(OGRE_LIBRARY
-    NAMES Ogre_core
+    NAMES OgreMain
     PATHS ${OGRE_LIBRARY_DIR_HINTS}
           ${OGRE_CHECK_LIBRARY_DIRS}
     NO_DEFAULT_PATH)
 if(NOT OGRE_LIBRARY OR NOT EXISTS ${OGRE_LIBRARY})
 OGRE_REPORT_NOT_FOUND("Could not find Ogre library, "
-    "set OGRE_LIBRARY to full path to libOgre_core.")
+    "set OGRE_LIBRARY to full path to libOgreMain.so.")
 else()
     string(REGEX MATCH ".*/" OGRE_LIBRARY_DIR ${OGRE_LIBRARY})
 endif()
@@ -115,7 +119,7 @@ endif()
 #       for comparison to handle Windows using CamelCase library names, could
 #       this check be better?
 string(TOLOWER "${OGRE_LIBRARY}" LOWERCASE_OGRE_LIBRARY)
-if(OGRE_LIBRARY AND NOT "${LOWERCASE_OGRE_LIBRARY}" MATCHES ".*Ogre_*")
+if(OGRE_LIBRARY AND NOT "${LOWERCASE_OGRE_LIBRARY}" MATCHES ".*ogre*")
 OGRE_REPORT_NOT_FOUND("Caller defined OGRE_LIBRARY: "
     "${OGRE_LIBRARY} does not match Ogre.")
 endif()
@@ -124,7 +128,6 @@ endif()
 if(OGRE_FOUND)
     list(APPEND OGRE_INCLUDE_DIRS ${OGRE_INCLUDE_DIR} /usr/include/suitesparse)
     file(GLOB OGRE_LIBRARIES ${OGRE_LIBRARY_DIR}libOgre*)
-    list(APPEND OGRE_LIBRARIES ${OGRE_LIBRARIES} cholmod cxsparse)
 endif()
 
 # Handle REQUIRED / QUIET optional arguments.
