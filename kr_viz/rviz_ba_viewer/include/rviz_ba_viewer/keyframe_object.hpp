@@ -29,8 +29,16 @@ public:
   KeyFrameObject(Ogre::SceneManager * scene_manager, int id);
   virtual ~KeyFrameObject();
   
+  /**
+   * @brief ID of the key-frame.
+   * @return 
+   */
   const int& id() const { return id_; }
   
+  /**
+   * @brief OGRE SceneNode to which all camera geometry is attached.
+   * @return 
+   */
   Ogre::SceneNode* sceneNode() const { return scene_node_; }
   
   /**

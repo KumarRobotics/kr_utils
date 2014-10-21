@@ -7,3 +7,5 @@ std_msgs/Header header
 # List of KeyFrames in the graph.
 KeyFrame[] keyframes
 
+# List of Points in the graph.
+BaPoint[] points

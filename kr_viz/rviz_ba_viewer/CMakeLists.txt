@@ -32,6 +32,7 @@ catkin_package()
 set(${PROJECT_NAME}_SOURCES
   src/ba_display.cpp
   src/keyframe_object.cpp
+  src/feature_rays_object.cpp
 )
 
 set(${PROJECT_NAME}_HEADERS
