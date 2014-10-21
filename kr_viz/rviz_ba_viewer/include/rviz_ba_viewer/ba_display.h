@@ -21,6 +21,8 @@ namespace rviz {
 class Property;
 class IntProperty;
 class RosTopicProperty;
+class FloatProperty;
+class BoolProperty;
 
 /**
  * @brief RViz plugin for rendering a bundle-adjustment graph.
@@ -39,14 +41,18 @@ public:
   virtual void update(float,float);
   
 protected slots:
-  void updateTopic();
-  void updateRenderEvery();
+  void updateTopic();         /// When topic is changed.
+  void updateRenderEvery();   /// When 'render every' option is changed.
+  void updateScale();         /// When scale option is changed.
+  void updateImageEnabled();  /// When images are enabled/disabled
   
 protected:
   
   /// Properties for the GUI
   RosTopicProperty * topic_property_;
   IntProperty * render_every_property_;
+  FloatProperty * scale_property_;
+  BoolProperty * image_enabled_property_;
   
   /// ROS objects
   ros::Subscriber sub_graph_;
@@ -54,6 +60,8 @@ protected:
   /// Display objects
   std::map<int, KeyFrameObject::Ptr> keyframes_;
   bool dirty_{false};
+  double scale_{1};
+  bool image_enabled_{true};
   std::string frame_;
   
   /// Overrides from Display
