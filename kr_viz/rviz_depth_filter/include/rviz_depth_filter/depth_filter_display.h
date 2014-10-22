@@ -20,6 +20,8 @@ namespace rviz {
 
 class Property;
 class RosTopicProperty;
+class FloatProperty;
+class ColorProperty;
 
 class DepthFilterDisplay : public Display {
   Q_OBJECT
@@ -38,11 +40,15 @@ public:
   
 protected slots:
   void updateTopic();
+  void updateLineWidth();
+  void updateLineColor();
   
 private:
   
   /// Properties for the GUI
   RosTopicProperty * topic_property_;
+  FloatProperty * line_width_property_;
+  ColorProperty * color_property_;
   
   /// ROS Objects
   ros::Subscriber sub_cloud_;
@@ -53,9 +59,8 @@ private:
   
   /// OGRE objects
   std::vector<std::shared_ptr<rviz::BillboardLine>> lines_; 
-  //Ogre::ManualObject * point_object_;
-  //Ogre::MaterialPtr point_material_;
-  Ogre::Vector4 color_{0.0196,0.0196,0.9255,1};
+  double line_width_{0.025};
+  Ogre::Vector4 color_{0.969,0,0.973,1};
   int id_;
   
   /// Overrides from Display

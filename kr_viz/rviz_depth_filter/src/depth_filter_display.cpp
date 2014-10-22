@@ -10,6 +10,8 @@
 
 #include <rviz/properties/property.h>
 #include <rviz/properties/ros_topic_property.h>
+#include <rviz/properties/float_property.h>
+#include <rviz/properties/color_property.h>
 #include <rviz/frame_manager.h>
 #include <rviz/display_context.h>
 
@@ -30,6 +32,12 @@ DepthFilterDisplay::DepthFilterDisplay() : Display() {
       new RosTopicProperty("Topic","",QString::fromStdString(msg_name),
                            "rviz_ba_viewer::DepthFilter topic to subscribe to.",
                            this,SLOT(updateTopic()));
+  line_width_property_ = 
+      new FloatProperty("Line Width", 0.025, "Width of lines", this,
+                        SLOT(updateLineWidth()));
+  color_property_ = 
+      new ColorProperty("Color", QColor(247,0,248,255), "Line color", this,
+                        SLOT(updateLineColor()));
 }
 
 DepthFilterDisplay::~DepthFilterDisplay() {
@@ -66,7 +74,7 @@ void DepthFilterDisplay::createGeometry() {
     std::shared_ptr<rviz::BillboardLine> line;
     line.reset( new rviz::BillboardLine(scene_manager_,scene_node_) );
     line->setColor(color_.x,color_.y,color_.z,color_.w);
-    line->setLineWidth(0.025);
+    line->setLineWidth(line_width_);
     
     //  calculate start and end points
     const geometry_msgs::Point& origin = cloud_.origins[i];
@@ -85,58 +93,29 @@ void DepthFilterDisplay::createGeometry() {
     line->addPoint(maxPt);
     lines_.push_back(line);
   }
-  
-//  if (!initialized_) {
-//    point_object_ = scene_manager_->createManualObject();
-    
-//    const Ogre::String& group = 
-//        Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
-//    Ogre::MaterialManager& man = Ogre::MaterialManager::getSingleton();
-//    //  some boring settings...
-//    point_material_ = man.create("dcd_material_" + std::to_string(id_), group);
-//    point_material_->setReceiveShadows(false);
-//    point_material_->getTechnique(0)->setLightingEnabled(false);
-//    point_material_->setCullingMode(Ogre::CULL_NONE);
-//    point_material_->setDepthWriteEnabled(true);
-//    point_material_->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-    
-//    initialized_ = true;
-//  }
-  
-      
-  
-//  point_object_->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAIN);
-//  point_object_->begin(point_material_->getName(),
-//                       Ogre::RenderOperation::OT_LINE_LIST);
-//  {
-//    //  for now render every line the same colour
-//    point_object_->colour(color_.x,color_.y,color_.z,color_.w);
-    
-//    //  draw a line for every point
-//    const size_t N = cloud_.origins.size();
-//    for (size_t i=0; i < N; i++) {
-//      const geometry_msgs::Point& origin = cloud_.origins[i];
-//      const geometry_msgs::Point& center = cloud_.positions[i];
-//      const double length = cloud_.sigmas[i];
-      
-//      //  find start and end of line
-//      Ogre::Vector3 minPt, maxPt;
-      
-//        //  use length to find min/max point
-//        const double& len = lengths_[i];
-//        Ogre::Vector3 n = c - origin_;
-//        n.normalise();
-//        minPt = c - n*len;
-//        maxPt = c + n*len;
-//    }
-//  }
-//  point_object_->end();
 }
 
 void DepthFilterDisplay::updateTopic() {
   unsubscribe();
   cleanup();
   subscribe();
+}
+
+void DepthFilterDisplay::updateLineWidth() {
+  double value = line_width_property_->getValue().toDouble();
+  if (value < 0.001) {
+    value = 0.001;
+    line_width_property_->setValue(QVariant(value));
+  }
+  line_width_ = value;
+}
+
+void DepthFilterDisplay::updateLineColor() {
+  const QColor color = color_property_->getColor();
+  color_.x = color.red() / 255.0;
+  color_.y = color.green() / 255.0;
+  color_.z = color.blue() / 255.0;
+  color_.w = color.alpha() / 255.0;
 }
 
 void DepthFilterDisplay::onEnable() {
