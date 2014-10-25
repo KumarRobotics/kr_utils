@@ -25,17 +25,17 @@ namespace rviz {
 DepthFilterDisplay::DepthFilterDisplay() : Display() {
   static int cur_id=0;
   id_ = cur_id++;
-  
-  const std::string msg_name = 
+
+  const std::string msg_name =
       ros::message_traits::datatype<rviz_depth_filter::DepthFilter>();
-  topic_property_ = 
+  topic_property_ =
       new RosTopicProperty("Topic","",QString::fromStdString(msg_name),
                            "rviz_ba_viewer::DepthFilter topic to subscribe to.",
                            this,SLOT(updateTopic()));
-  line_width_property_ = 
+  line_width_property_ =
       new FloatProperty("Line Width", 0.025, "Width of lines", this,
                         SLOT(updateLineWidth()));
-  color_property_ = 
+  color_property_ =
       new ColorProperty("Color", QColor(247,0,248,255), "Line color", this,
                         SLOT(updateLineColor()));
 }
@@ -65,9 +65,9 @@ void DepthFilterDisplay::update(float, float) {
 }
 
 void DepthFilterDisplay::createGeometry() {
-  
+
   lines_.clear(); //  get rid of old geometry
-  
+
   /// @todo: rendering the cloud with individual rviz lines is not very efficient
   /// if scalability is desired, this will need to be updated later
   for (size_t i=0; i < cloud_.positions.size(); i++) {
@@ -75,14 +75,14 @@ void DepthFilterDisplay::createGeometry() {
     line.reset( new rviz::BillboardLine(scene_manager_,scene_node_) );
     line->setColor(color_.x,color_.y,color_.z,color_.w);
     line->setLineWidth(line_width_);
-    
+
     //  calculate start and end points
     const geometry_msgs::Point& origin = cloud_.origins[i];
     const geometry_msgs::Point& center = cloud_.positions[i];
     const Ogre::Vector3 o(origin.x,origin.y,origin.z);
     const Ogre::Vector3 c(center.x,center.y,center.z);
     const double length = cloud_.sigmas[i]*2; //  do two standard deviations
-          
+
     Ogre::Vector3 minPt, maxPt;
     //  use length to find min/max point
     Ogre::Vector3 n = c - o;
@@ -129,7 +129,7 @@ void DepthFilterDisplay::onDisable() {
 
 void DepthFilterDisplay::subscribe() {
   if (!isEnabled()) {
-    return;    
+    return;
   }
   const std::string topic = topic_property_->getTopic().toStdString();
   if (!topic.empty()) {
@@ -158,7 +158,7 @@ void DepthFilterDisplay::applyFixedTransform() {
   }
   Ogre::Vector3 position;
   Ogre::Quaternion orientation;
-  
+
   //  all geometry is assumed to be in 'frame_', which is identity wrt. itself
   geometry_msgs::Pose pose;
   pose.orientation.w = 1;
@@ -187,15 +187,15 @@ void DepthFilterDisplay::applyFixedTransform() {
 void DepthFilterDisplay::topicCallback(
     const rviz_depth_filter::DepthFilterConstPtr &msg) {
   frame_ = msg->header.frame_id;
-  setStatus(StatusProperty::Ok, "Message", 
+  setStatus(StatusProperty::Ok, "Message",
             QString("Ok"));
-  
+
   const size_t N = msg->origins.size();
   if (N != msg->positions.size() || N != msg->sigmas.size()) {
-    setStatus(StatusProperty::Error, "Message", 
+    setStatus(StatusProperty::Error, "Message",
               QString("All message arrays must be the same dimension!"));
   } else {
-    cloud_ = *msg; 
+    cloud_ = *msg;
     has_data_ = true;
     //  re-build
     createGeometry();
@@ -208,7 +208,7 @@ void DepthFilterDisplay::cleanup() {
 //    //point_material_.setNull();
 //    initialized_ = false;
 //  }
-  
+
   lines_.clear();
 }
 

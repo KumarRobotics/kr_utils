@@ -81,9 +81,6 @@ class Timer {
   explicit Timer(const std::string& name, int report_every_n_iter = 0)
       : name_(name), report_every_n_iter_(report_every_n_iter) {}
 
-  Timer(const Timer&) = delete;
-  Timer& operator=(const Timer&) = delete;
-
   int iteration() const { return iteration_; }
   const std::string& name() const { return name_; }
 

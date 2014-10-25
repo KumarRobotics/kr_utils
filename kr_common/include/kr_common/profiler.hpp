@@ -3,6 +3,7 @@
 
 #include <initializer_list>
 #include <unordered_map>
+#include <algorithm>
 #include <stdexcept>
 
 #include "kr_common/timer.hpp"
@@ -16,10 +17,13 @@ class Profiler {
 
  public:
   Profiler() = default;
-  Profiler(std::initializer_list<std::string> il);
+  Profiler(std::initializer_list<std::string> il) {
+    std::for_each(il.begin(), il.end(),
+                  [this](const std::string& name) { AddTimer(name); });
+  }
 
   void AddTimer(const std::string& name) {
-    timers_.insert(std::make_pair(name, Timer<D>()));
+    timers_.insert(std::make_pair(name, Timer<D>(name)));
   }
 
   void StartTimer(const std::string& name) {
@@ -39,16 +43,17 @@ class Profiler {
   }
 
   template <typename T = D>
-  void ReportAll() {
-    std::for_each(timers_.cbegin(), timers_.cend(),
-                  [](const auto& timer) { timer.second.Report<T>(); });
+  void ReportAll() const {
+    for (const std::pair<std::string, Timer<D>>& p : timers_) {
+      p.second.template Report<T>();
+    }
   }
 
  private:
   std::unordered_map<std::string, Timer<D>> timers_;
 };
-}  // namespace common
 
+}  // namespace common
 }  // namespace kr
 
 #endif  // KR_COMMON_PROFILER_HPP_
