@@ -11,8 +11,6 @@
 
 namespace kr {
 
-// I don't think anyone wants a timer that ticks every hour?
-// Unless you are playing with 10 billions points or something
 typedef std::chrono::seconds sec;
 typedef std::chrono::milliseconds ms;
 typedef std::chrono::microseconds us;
@@ -60,7 +58,7 @@ std::string Unit<ns>() {
 
 /**
  * @brief Ratio
- * @return ration of between type T and U
+ * @return ratio of type T and U
  */
 template <typename T, typename U>
 double Ratio() {
