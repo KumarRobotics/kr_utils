@@ -16,8 +16,6 @@ typedef std::chrono::milliseconds ms;
 typedef std::chrono::microseconds us;
 typedef std::chrono::nanoseconds ns;
 
-namespace common {
-
 /**
  * @brief The is_duration struct
  */
@@ -199,7 +197,6 @@ void PrintClockData() {
   std::cout << "- is_steady: " << std::boolalpha << C::is_steady << std::endl;
 }
 
-}  // namespace common
 }  // namespace kr
 
 #endif  // KR_COMMON_TIMER_HPP_

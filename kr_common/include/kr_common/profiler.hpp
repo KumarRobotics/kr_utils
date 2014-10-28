@@ -9,7 +9,6 @@
 #include "kr_common/timer.hpp"
 
 namespace kr {
-namespace common {
 
 template <typename D>
 class Profiler {
@@ -44,7 +43,7 @@ class Profiler {
 
   template <typename T = D>
   void ReportAll() const {
-    for (const std::pair<std::string, Timer<D>>& p : timers_) {
+    for (const auto& p : timers_) {
       p.second.template Report<T>();
     }
   }
@@ -53,7 +52,6 @@ class Profiler {
   std::unordered_map<std::string, Timer<D>> timers_;
 };
 
-}  // namespace common
 }  // namespace kr
 
 #endif  // KR_COMMON_PROFILER_HPP_

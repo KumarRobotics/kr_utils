@@ -5,7 +5,6 @@
 #include <ros/package.h>
 
 namespace kr {
-namespace common {
 
 /**
  * @brief getParam Get ros param in node handle's namespace
@@ -61,7 +60,6 @@ std::string GetPackageFilename(const std::string url) {
   }
 }
 
-}  // namespace common
 }  // namespace kr
 
 #endif  // KR_COMMON_ROS_HELPER_HPP_

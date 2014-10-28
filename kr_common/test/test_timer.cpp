@@ -1,7 +1,7 @@
 #include "kr_common/timer.hpp"
 #include <unistd.h>
 
-using namespace kr::common;
+using namespace kr;
 int main(int agrc, char** argv) {
   std::cout << "system_clock: " << std::endl;
   PrintClockData<std::chrono::system_clock>();
