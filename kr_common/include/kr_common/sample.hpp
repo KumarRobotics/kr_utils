@@ -1,41 +1,52 @@
 #ifndef KR_COMMON_SAMPLE_HPP_
 #define KR_COMMON_SAMPLE_HPP_
 
-namespace kr {
-namespace common {
-
 #include <random>
 #include <chrono>
+#include <type_traits>
+
+namespace kr {
 
 class Sample {
  public:
-  static int Uniform(int upper, int lower) {
-    std::uniform_int_distribution<int> distribution(upper, lower);
-    return distribution(generator_int);
+  /**
+   * @brief Randomize the engine
+   */
+  static void Randomize() { engine_.seed(rd_()); }
+
+  template <typename T>
+  static T Uniform(T upper, T lower) {
+    static_assert(std::is_arithmetic<T>::value,
+                  "template argument not an arithmetic type.");
+    return UniformImpl(upper, lower, std::is_integral<T>{});
   }
 
-  /**
-   * @brief Uniform distribution real
-   */
-  template <typename T>
-  static T Uniform() {
-    std::uniform_real_distribution<T> distribution(0.0, 1.0);
-    return distribution(generator_real);
-  }
-
-  /**
-   * @brief Gaussian distribution
-   */
-  template <typename T>
-  static T Gaussian(T mean = 0.0, T stddev = 1.0) {
-    std::normal_distribution<double> distribution(mean, stddev);
-    return distribution(generator_real);
+  template <typename T = double>
+  static T Gaussian(T mean = 0, T stddev = 1.0) {
+    std::normal_distribution<T> distribution(mean, stddev);
+    return distribution(engine_);
   }
 
  private:
+  template <typename T>
+  static T UniformImpl(T upper, T lower, std::true_type) {
+    std::uniform_int_distribution<T> distribution(upper, lower);
+    return distribution(engine_);
+  }
+
+  template <typename T>
+  static T UniformImpl(T upper, T lower, std::false_type) {
+    std::uniform_real_distribution<T> distribution(upper, lower);
+    return distribution(engine_);
+  }
+
+  static std::random_device rd_;
+  static std::default_random_engine engine_;
 };
 
-}  // namespace common
+std::random_device Sample::rd_;
+std::default_random_engine Sample::engine_;
+
 }  // namespace kr
 
 #endif  // KR_COMMON_SAMPLE_HPP_

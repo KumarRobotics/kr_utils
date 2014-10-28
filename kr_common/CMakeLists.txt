@@ -21,4 +21,5 @@ add_executable(test_timer test/test_timer.cpp)
 add_executable(test_pretty_print test/test_pretty_print.cpp)
 add_executable(test_pretty_printer test/test_pretty_printer.cpp)
 add_executable(test_profiler test/test_profiler.cpp)
+add_executable(test_sample test/test_sample.cpp)
 
