@@ -7,6 +7,11 @@
 
 namespace kr {
 
+/**
+ * @brief The Sample class, a thin wrapper over <random> with a few
+ * novice-friendly functions. This will be probably be deprecated after C++14.
+ * Since there's a plan for augmenting the <algorithm> header with <sample>.
+ */
 class Sample {
  public:
   /**
