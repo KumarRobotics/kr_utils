@@ -11,14 +11,10 @@
 
 namespace kr {
 
-// I don't think anyone wants a timer that ticks every hour?
-// Unless you are playing with 10 billions points or something
 typedef std::chrono::seconds sec;
 typedef std::chrono::milliseconds ms;
 typedef std::chrono::microseconds us;
 typedef std::chrono::nanoseconds ns;
-
-namespace common {
 
 /**
  * @brief The is_duration struct
@@ -60,7 +56,7 @@ std::string Unit<ns>() {
 
 /**
  * @brief Ratio
- * @return ration of between type T and U
+ * @return ratio of type T and U
  */
 template <typename T, typename U>
 double Ratio() {
@@ -80,9 +76,6 @@ class Timer {
  public:
   explicit Timer(const std::string& name, int report_every_n_iter = 0)
       : name_(name), report_every_n_iter_(report_every_n_iter) {}
-
-  Timer(const Timer&) = delete;
-  Timer& operator=(const Timer&) = delete;
 
   int iteration() const { return iteration_; }
   const std::string& name() const { return name_; }
@@ -204,7 +197,6 @@ void PrintClockData() {
   std::cout << "- is_steady: " << std::boolalpha << C::is_steady << std::endl;
 }
 
-}  // namespace common
 }  // namespace kr
 
 #endif  // KR_COMMON_TIMER_HPP_

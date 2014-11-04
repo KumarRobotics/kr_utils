@@ -20,7 +20,6 @@
 #include <vector>
 
 namespace kr {
-namespace common {
 
 template <typename T>
 struct is_container_helper {
@@ -282,7 +281,6 @@ struct special_formatter {
   }
 };
 
-}  // namespace common
 }  // namespace kr
 
 #endif  // PRETTY_PRINTER_HPP_
