@@ -151,7 +151,7 @@ void KeyFrameObject::createGeometry() {
   }
   frustum_object_->end();
   
-  if (imageEnabled_ && texture_->isLoaded()) {
+  if (imageEnabled_ && !texture_.isNull() && texture_->isLoaded()) {
     //  now the textured quad w/ our image
     //  first set up the material for textured drawing
     Ogre::Pass * pass = material_->getTechnique(0)->getPass(0);
