@@ -40,21 +40,21 @@ namespace kr {
  *Complex Environments", Shaojie Shen et. al, 2013
  */
 template <typename Scalar>
-Scalar triangulate(const kr::Pose<Scalar> &p1, const kr::vec2<Scalar> &x1,
-                  const kr::Pose<Scalar> &p2, const kr::vec2<Scalar> &x2,
-                  kr::vec3<Scalar> &pos, Scalar &ratio) {
+Scalar triangulate(const kr::Pose<Scalar> &p1, const kr::Vec2<Scalar> &x1,
+                  const kr::Pose<Scalar> &p2, const kr::Vec2<Scalar> &x2,
+                  kr::Vec3<Scalar> &pos, Scalar &ratio) {
 
-  const mat3<Scalar> R1T = p1.wRb();
+  const Mat3<Scalar> R1T = p1.wRb();
 
-  vec3<Scalar> v1 = R1T * kr::vec3<Scalar>(x1[0], x1[1], 1);
-  vec3<Scalar> v2 = p2.wRb()* kr::vec3<Scalar>(x2[0], x2[1], 1);
+  Vec3<Scalar> v1 = R1T * kr::Vec3<Scalar>(x1[0], x1[1], 1);
+  Vec3<Scalar> v2 = p2.wRb()* kr::Vec3<Scalar>(x2[0], x2[1], 1);
 
   v1 /= v1.norm();
   v2 /= v2.norm();
 
-  const mat3<Scalar> A1 = mat3<Scalar>::Identity() - v1 * v1.transpose();
-  const mat3<Scalar> A2 = mat3<Scalar>::Identity() - v2 * v2.transpose();
-  const mat3<Scalar> A = A1 + A2;
+  const Mat3<Scalar> A1 = Mat3<Scalar>::Identity() - v1 * v1.transpose();
+  const Mat3<Scalar> A2 = Mat3<Scalar>::Identity() - v2 * v2.transpose();
+  const Mat3<Scalar> A = A1 + A2;
 
   //	calculate eigenvalues
   const Scalar c = A(0, 0) * A(2, 2) - A(2, 0) * A(0, 2) - A(1, 0) * A(0, 1) +
@@ -67,7 +67,7 @@ Scalar triangulate(const kr::Pose<Scalar> &p1, const kr::vec2<Scalar> &x1,
   const Scalar inv_det = 1 / (lam1*lam2*lam3);
   ratio = lam1 / lam3;
 
-  mat3<Scalar> Ainv;
+  Mat3<Scalar> Ainv;
   Ainv(0, 0) = (-A(2, 1) * A(1, 2) + A(1, 1) * A(2, 2)) * inv_det;
   Ainv(0, 1) = (-A(0, 1) * A(2, 2) + A(0, 2) * A(2, 1)) * inv_det;
   Ainv(0, 2) = (A(0, 1) * A(1, 2) - A(0, 2) * A(1, 1)) * inv_det;
@@ -82,7 +82,7 @@ Scalar triangulate(const kr::Pose<Scalar> &p1, const kr::vec2<Scalar> &x1,
   pos = Ainv * (A1 * p1.p() + A2 * p2.p());
 
   //  depth in first frame (last column because R1 is transposed)
-  const vec3<Scalar> pf = pos - p1.p();
+  const Vec3<Scalar> pf = pos - p1.p();
   return R1T(0, 2) * pf[0] + R1T(1, 2) * pf[1] + R1T(2, 2) * pf[2];
 }
 
@@ -105,24 +105,24 @@ Scalar triangulate(const kr::Pose<Scalar> &p1, const kr::vec2<Scalar> &x1,
  * translation vector between the two poses expressed in the first frame.
  */
 template <typename Scalar>
-Scalar triangulateSimple(const kr::Pose<Scalar> &p1, const kr::vec2<Scalar> &x1,
-                         const kr::Pose<Scalar> &p2, const kr::vec2<Scalar> &x2,
+Scalar triangulateSimple(const kr::Pose<Scalar> &p1, const kr::Vec2<Scalar> &x1,
+                         const kr::Pose<Scalar> &p2, const kr::Vec2<Scalar> &x2,
                          Scalar &quality)
 {
   const kr::Pose<Scalar> p_1_2 = p2.expressedIn(p1);
-  kr::vec3<Scalar> obs1(x1(0), x1(1), 1);
+  kr::Vec3<Scalar> obs1(x1(0), x1(1), 1);
   obs1.normalize();
-  kr::vec3<Scalar> obs2(p_1_2.wRb()*kr::vec3<Scalar>(x2(0), x2(1), 1));
+  kr::Vec3<Scalar> obs2(p_1_2.wRb()*kr::Vec3<Scalar>(x2(0), x2(1), 1));
   obs2.normalize();
 
   quality = static_cast<Scalar>(1) - obs2.dot(obs1);
   if(quality <= static_cast<Scalar>(10)*std::numeric_limits<Scalar>::epsilon())
     return 0;
 
-  kr::mat<Scalar, 3, 2> A;
+  kr::Mat<Scalar, 3, 2> A;
   A << obs1.normalized(), obs2.normalized();
-  const kr::mat2<Scalar> AtA = A.transpose()*A;
-  const kr::vec2<Scalar>depth_vec = AtA.inverse()*A.transpose()*p_1_2.wTb();
+  const kr::Mat2<Scalar> AtA = A.transpose()*A;
+  const kr::Vec2<Scalar> depth_vec = AtA.inverse()*A.transpose()*p_1_2.wTb();
   return depth_vec(0)*obs1(2);
 }
 
@@ -139,15 +139,15 @@ Scalar triangulateSimple(const kr::Pose<Scalar> &p1, const kr::vec2<Scalar> &x1,
  * Reconstruction in Real Time", ICRA 2014
  */
 template <typename Scalar>
-Scalar triangulationDepthSigma(Scalar depth, const kr::vec2<Scalar> &obs,
-                               const kr::vec3<Scalar> &translation,
+Scalar triangulationDepthSigma(Scalar depth, const kr::Vec2<Scalar> &obs,
+                               const kr::Vec3<Scalar> &translation,
                                Scalar focal_length)
 {
-  const kr::vec3<Scalar> p(depth*obs(0), depth*obs(1), depth);
+  const kr::Vec3<Scalar> p(depth*obs(0), depth*obs(1), depth);
   const Scalar t_norm = translation.norm();
-  const kr::vec3<Scalar> t = translation/t_norm;
-  const kr::vec3<Scalar> f = p.normalized();
-  const kr::vec3<Scalar> a = p - translation;
+  const kr::Vec3<Scalar> t = translation/t_norm;
+  const kr::Vec3<Scalar> f = p.normalized();
+  const kr::Vec3<Scalar> a = p - translation;
   const Scalar alpha = std::acos(f.dot(t));
   const Scalar beta = std::acos(-a.normalized().dot(t));
   const Scalar pixel_error = 1;
@@ -159,54 +159,54 @@ Scalar triangulationDepthSigma(Scalar depth, const kr::vec2<Scalar> &obs,
 }
 
 /**
- * @brief Calculate covariance of a 3D point, given observation coords, the 
+ * @brief Calculate covariance of a 3D point, given observation coords, the
  * depth uncertainty, and the uncertainty on individual pixel measurements.
- * 
+ *
  * @param obsv Observation in normalized coordinates.
  * @param obvsCov Covariance on feature position, in normalized coordinates.J
  * @param depth Depth of the feature in camera frame (local Z).
  * @param depthSigma Std. dev. on feature depth in camera frame.
- * 
+ *
  * @return 3x3 Covariance matrix.
- * 
+ *
  * @note obvsSigma is in normalized image plane coordinates. If you wish to
  * assume a standard deviation of s for some focal length f, pass (s/f).
- * 
+ *
  * @note This method performs the operation J*P*J', where J is the jacobian of
- * [u,v,1]*Z with respect to the normalized image coordinates [u,v] and the 
+ * [u,v,1]*Z with respect to the normalized image coordinates [u,v] and the
  * feature depth, Z. P is the diagonal covariance of those three quantities.
  */
 template <typename Scalar>
-kr::mat3<Scalar> reprojectionCovariance(const kr::vec2<Scalar>& obsv,
-                                        const kr::mat2<Scalar>& obvsCov,
+kr::Mat3<Scalar> reprojectionCovariance(const kr::Vec2<Scalar>& obsv,
+                                        const kr::Mat2<Scalar>& obvsCov,
                                         Scalar depth,
                                         Scalar depthSigma) {
-  kr::mat3<Scalar> J = kr::mat3<Scalar>::Zero();
+  kr::Mat3<Scalar> J = kr::Mat3<Scalar>::Zero();
   J(0,0) = depth; //  Z in the camera frame
   J(0,2) = obsv[0];
   J(1,1) = depth;
   J(1,2) = obsv[1];
   J(2,2) = 1;
   //  variance, converted to normalized image coordinates
-  kr::mat3<Scalar> P = kr::mat3<Scalar>::Zero();
+  kr::Mat3<Scalar> P = kr::Mat3<Scalar>::Zero();
   P.template block<2,2>(0,0) = obvsCov;
   P(2,2) = depthSigma*depthSigma;
   return J*P*J.transpose();
 }
 
 template <typename Scalar>
-kr::mat3<Scalar> triangulationCovariance(const kr::vec2<Scalar>& obsv,
+kr::Mat3<Scalar> triangulationCovariance(const kr::Vec2<Scalar>& obsv,
                                         Scalar obvsSigma,
                                         Scalar depth,
                                         Scalar depthSigma) {
-  kr::mat3<Scalar> J = kr::mat3<Scalar>::Zero();
+  kr::Mat3<Scalar> J = kr::Mat3<Scalar>::Zero();
   J(0,0) = depth; //  Z in the camera frame
   J(0,2) = obsv[0];
   J(1,1) = depth;
   J(1,2) = obsv[1];
   J(2,2) = 1;
   //  variance, converted to normalized image coordinates
-  kr::mat3<Scalar> P = kr::mat3<Scalar>::Zero();
+  kr::Mat3<Scalar> P = kr::Mat3<Scalar>::Zero();
   P(0,0) = P(1,1) = obvsSigma;
   P(2,2) = depthSigma*depthSigma;
   return J*P*J.transpose();
@@ -244,8 +244,8 @@ kr::mat3<Scalar> triangulationCovariance(const kr::vec2<Scalar>& obsv,
  */
 template <typename Scalar>
 bool refinePoint(const std::vector<kr::Pose<Scalar>> &poses,
-                 const std::vector<kr::vec2<Scalar>> &observations,
-                 kr::vec3<Scalar> &position,
+                 const std::vector<kr::Vec2<Scalar>> &observations,
+                 kr::Vec3<Scalar> &position,
                  const std::vector<Scalar>& weights = std::vector<Scalar>(),
                  int maxIterations = 10, Scalar epsilon = 0.001,
                  Scalar eta = 0.005) {
@@ -265,7 +265,7 @@ bool refinePoint(const std::vector<kr::Pose<Scalar>> &poses,
 
   //  feature position in camera frame of pose N (first pose)
   const Pose<Scalar> &poseN = poses.front();
-  const vec3<Scalar> pf_N = poseN.bRw() * (position - poseN.p());
+  const Vec3<Scalar> pf_N = poseN.bRw() * (position - poseN.p());
 
   const Scalar rho = 1 / pf_N[2];
   if (!std::isnormal(rho)) {
@@ -274,13 +274,13 @@ bool refinePoint(const std::vector<kr::Pose<Scalar>> &poses,
   }
 
   //  initial guess for [alpha, beta, rho]
-  vec3<Scalar> params = vec3<Scalar>(pf_N[0], pf_N[1], 1) * rho;
+  Vec3<Scalar> params = Vec3<Scalar>(pf_N[0], pf_N[1], 1) * rho;
 
-  mat<Scalar, Eigen::Dynamic, 1> res(numPoses * 2, 1); //  residuals
-  mat<Scalar, Eigen::Dynamic, 3> jac(numPoses * 2, 3); //  jacobians
+  Mat<Scalar, Eigen::Dynamic, 1> res(numPoses * 2, 1); //  residuals
+  Mat<Scalar, Eigen::Dynamic, 3> jac(numPoses * 2, 3); //  jacobians
 
   //  weights
-  mat<Scalar, Eigen::Dynamic, Eigen::Dynamic> W(numPoses * 2, numPoses * 2);
+  Mat<Scalar, Eigen::Dynamic, Eigen::Dynamic> W(numPoses * 2, numPoses * 2);
   W.setIdentity();
   bool invertible;
 
@@ -291,13 +291,13 @@ bool refinePoint(const std::vector<kr::Pose<Scalar>> &poses,
     }
   }
 
-  mat<Scalar, 2, 3> J1 = mat<Scalar, 2, 3>::Zero();
-  mat<Scalar, 3, 3> J2;
-  mat<Scalar, 2, 3> J;
+  Mat<Scalar, 2, 3> J1 = Mat<Scalar, 2, 3>::Zero();
+  Mat<Scalar, 3, 3> J2;
+  Mat<Scalar, 2, 3> J;
 
   //  calculate relative poses
-  std::vector<mat3<Scalar>> jRn;
-  std::vector<vec3<Scalar>> jTn;
+  std::vector<Mat3<Scalar>> jRn;
+  std::vector<Vec3<Scalar>> jTn;
 
   jRn.reserve(numPoses);
   jTn.reserve(numPoses);
@@ -314,12 +314,12 @@ bool refinePoint(const std::vector<kr::Pose<Scalar>> &poses,
     for (size_t j = 0; j < numPoses; j++) {
 
       //  pose J expressed in pose N
-      const mat3<Scalar> &R = jRn[j];
-      const vec3<Scalar> &p = jTn[j];
-      const vec2<Scalar> &img = observations[j];
+      const Mat3<Scalar> &R = jRn[j];
+      const Vec3<Scalar> &p = jTn[j];
+      const Vec2<Scalar> &img = observations[j];
       //  conversion from pose N to pose J
-      const vec3<Scalar> h =
-          R * vec3<Scalar>(params[0], params[1], 1) - (params[2] * p);
+      const Vec3<Scalar> h =
+          R * Vec3<Scalar>(params[0], params[1], 1) - (params[2] * p);
       const Scalar invz = 1 / h[2];
 
       //  projection jacobian
@@ -347,19 +347,19 @@ bool refinePoint(const std::vector<kr::Pose<Scalar>> &poses,
     }
 
     auto jacT = jac.transpose();
-    mat3<Scalar> H = jacT * W * jac; //  weighted hessian
+    Mat3<Scalar> H = jacT * W * jac; //  weighted hessian
 
     //  levenberg component
     for (int i = 0; i < 3; i++) {
       H(i, i) *= (1 + eta);
     }
 
-    mat3<Scalar> Hinv;
+    Mat3<Scalar> Hinv;
     H.computeInverseWithCheck(Hinv, invertible);
 
     if (invertible) {
       //  calculate correction to alpha, beta and rho
-      const vec3<Scalar> cor = Hinv * (jacT * res);
+      const Vec3<Scalar> cor = Hinv * (jacT * res);
 
       for (int n = 0; n < 3; n++) {
         params[n] += cor[n];
@@ -384,7 +384,7 @@ bool refinePoint(const std::vector<kr::Pose<Scalar>> &poses,
   }
 
   //  convert back to world coordinates
-  position = poseN.wRb() * vec3<Scalar>(params[0], params[1], 1)/invz
+  position = poseN.wRb() * Vec3<Scalar>(params[0], params[1], 1)/invz
       + poseN.p();
   return true;
 }

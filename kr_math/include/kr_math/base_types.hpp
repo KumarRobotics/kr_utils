@@ -21,45 +21,45 @@
 namespace kr {
 
 template <typename Scalar, int Rows, int Cols>
-using mat = Eigen::Matrix<Scalar, Rows, Cols>;
+using Mat = Eigen::Matrix<Scalar, Rows, Cols>;
 
 template <typename Scalar, int Rows>
-using vec = Eigen::Matrix<Scalar, Rows, 1>;
+using Vec = Eigen::Matrix<Scalar, Rows, 1>;
 
-template <typename Scalar> using vec2 = mat<Scalar, 2, 1>;
+template <typename Scalar> using Vec2 = Mat<Scalar, 2, 1>;
 
-template <typename Scalar> using vec3 = mat<Scalar, 3, 1>;
+template <typename Scalar> using Vec3 = Mat<Scalar, 3, 1>;
 
-template <typename Scalar> using vec4 = mat<Scalar, 4, 1>;
+template <typename Scalar> using Vec4 = Mat<Scalar, 4, 1>;
 
-template <typename Scalar> using mat2 = mat<Scalar, 2, 2>;
+template <typename Scalar> using Mat2 = Mat<Scalar, 2, 2>;
 
-template <typename Scalar> using mat3 = mat<Scalar, 3, 3>;
+template <typename Scalar> using Mat3 = Mat<Scalar, 3, 3>;
 
-template <typename Scalar> using mat4 = mat<Scalar, 4, 4>;
+template <typename Scalar> using Mat4 = Mat<Scalar, 4, 4>;
 
-template <typename Scalar> using quat = Eigen::Quaternion<Scalar>;
+template <typename Scalar> using Quat = Eigen::Quaternion<Scalar>;
 
-typedef vec2<float> vec2f;
-typedef vec2<double> vec2d;
+typedef Vec2<float> Vec2f;
+typedef Vec2<double> Vec2d;
 
-typedef vec3<float> vec3f;
-typedef vec3<double> vec3d;
+typedef Vec3<float> Vec3f;
+typedef Vec3<double> Vec3d;
 
-typedef vec4<float> vec4f;
-typedef vec4<double> vec4d;
+typedef Vec4<float> Vec4f;
+typedef Vec4<double> Vec4d;
 
-typedef mat2<float> mat2f;
-typedef mat2<double> mat2d;
+typedef Mat2<float> Mat2f;
+typedef Mat2<double> Mat2d;
 
-typedef mat3<float> mat3f;
-typedef mat3<double> mat3d;
+typedef Mat3<float> Mat3f;
+typedef Mat3<double> Mat3d;
 
-typedef mat4<float> mat4f;
-typedef mat4<double> mat4d;
+typedef Mat4<float> Mat4f;
+typedef Mat4<double> Mat4d;
 
-typedef quat<float> quatf;
-typedef quat<double> quatd;
+typedef Quat<float> Quatf;
+typedef Quat<double> Quatd;
 
 } // namespace kr
 
