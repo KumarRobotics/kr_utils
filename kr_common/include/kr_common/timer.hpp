@@ -30,40 +30,40 @@ struct is_duration<std::chrono::duration<T, U>> : std::true_type {};
  * @return unit as a string
  */
 template <typename T>
-std::string Unit() {
+std::string DurationUnit() {
   return "unknown unit";
 }
 
 template <>
-std::string Unit<sec>() {
+std::string DurationUnit<sec>() {
   return "sec";
 }
 
 template <>
-std::string Unit<ms>() {
+std::string DurationUnit<ms>() {
   return "ms";
 }
 
 template <>
-std::string Unit<us>() {
+std::string DurationUnit<us>() {
   return "us";
 }
 
 template <>
-std::string Unit<ns>() {
+std::string DurationUnit<ns>() {
   return "ns";
 }
 
 /**
  * @brief Ratio
- * @return ratio of type T and U
+ * @return ratio of type NumType and DenType
  */
-template <typename T, typename U>
+template <typename NumType, typename DenType>
 double Ratio() {
-  typedef typename T::period TP;
-  typedef typename U::period UP;
-  typedef typename std::ratio_divide<TP, UP>::type RP;
-  return static_cast<double>(RP::num) / RP::den;
+  typedef typename NumType::period NumPeriod;
+  typedef typename DenType::period DenPeriod;
+  typedef typename std::ratio_divide<NumPeriod, DenPeriod>::type RatioType;
+  return static_cast<double>(RatioType::num) / RatioType::den;
 }
 
 /**
@@ -152,13 +152,29 @@ class Timer {
   }
 
   /**
+   * @brief BaseUnit
+   * @return base unit of the timer when it's instantiated
+   */
+  std::string BaseUnit() { return DurationUnit<D>(); }
+
+  /**
+   * @brief Unit
+   * @return unit of the timer with duration type T
+   */
+  template <typename T = D>
+  std::string Unit() {
+    return DurationUnit<T>();
+  }
+
+  /**
    * @brief Report
    * @param unit_name A string representing the unit
    */
   template <typename T = D>
   void Report(std::ostream& os = std::cout) const {
-    os << name_ << " - iterations: " << iteration_ << ", unit: " << Unit<T>()
-       << ", average: " << Average<T>() << " "
+    os << name_ << " - iterations: " << iteration_
+       << ", unit: " << DurationUnit<T>() << ", average: " << Average<T>()
+       << " "
        << ", min: " << Min<T>() << ", max: " << Max<T>() << std::endl;
   }
 
