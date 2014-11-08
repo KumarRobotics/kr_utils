@@ -7,7 +7,7 @@
 namespace kr {
 
 /**
- * @brief getParam Get ros param in node handle's namespace
+ * @brief getParam Get ros param in node handle's namespace, with default value
  */
 template <typename T>
 T GetParam(const ros::NodeHandle& nh, const std::string& param_name,
@@ -17,14 +17,18 @@ T GetParam(const ros::NodeHandle& nh, const std::string& param_name,
   return param_val;
 }
 
+/**
+ * @brief GetParam Get ros param in node handle's namespace ,use T's default
+ * constructor
+ */
 template <typename T>
 T GetParam(const ros::NodeHandle& nh, const std::string& param_name) {
-  T default_val{};
+  const T default_val{};
   return GetParam(nh, param_name, default_val);
 }
 
 /**
- * @brief getParam Get ros param in node's namespace
+ * @brief getParam Get ros param in node's namespace with default value
  */
 template <typename T>
 T GetParam(const std::string& param_name, const T& default_val) {
@@ -34,30 +38,35 @@ T GetParam(const std::string& param_name, const T& default_val) {
 }
 
 template <typename T>
+/**
+ * @brief GetParam Get ros param in node's namespace, use T's default
+ * constructor
+ */
 T GetParam(const std::string& param_name) {
-  T default_val{};
+  const T default_val{};
   return GetParam(param_name, default_val);
 }
 
 /**
- * @brief GetPackageFilename Get full file name based on url
+ * @brief PackageUrlToFullPath Get full file path based on package url
  * @param url Url start with package://
  * @return Path of url
+ * @note Assume url contains no special variable needs to be resolved
  */
-std::string GetPackageFilename(const std::string url) {
+std::string PackageUrlToFullPath(const std::string url) {
   static const std::string pkg_prefix("package://");
   static const size_t prefix_len = pkg_prefix.length();
-  size_t rest = url.find('/', prefix_len);
-  std::string pkg(url.substr(prefix_len, rest - prefix_len));
+  const size_t rest = url.find('/', prefix_len);
+  const std::string pkg(url.substr(prefix_len, rest - prefix_len));
 
   // Look up the ROS package path name.
-  std::string pkg_path(ros::package::getPath(pkg));
+  const std::string pkg_path(ros::package::getPath(pkg));
   if (pkg_path.empty()) {
     ROS_WARN_STREAM("unknown package: " << pkg << " (ignored)");
     return pkg_path;
-  } else {
-    return pkg_path + url.substr(rest);
   }
+
+  return pkg_path + url.substr(rest);
 }
 
 }  // namespace kr
