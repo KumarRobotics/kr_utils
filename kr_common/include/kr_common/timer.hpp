@@ -69,9 +69,9 @@ double Ratio() {
 /**
  * @brief The Timer class
  */
-template <typename D>
+template <typename DurationType>
 class Timer {
-  static_assert(is_duration<D>::value, "Not a valid duration type");
+  static_assert(is_duration<DurationType>::value, "Not a valid duration type");
 
  public:
   explicit Timer(const std::string& name, int report_every_n_iter = 0)
@@ -93,7 +93,7 @@ class Timer {
    * @brief Stop, stop timing
    */
   void Stop() {
-    elapsed_ = std::chrono::duration_cast<D>(
+    elapsed_ = std::chrono::duration_cast<DurationType>(
         std::chrono::high_resolution_clock::now() - start_);
     assert(running_);
     total_ += elapsed_;
@@ -108,33 +108,33 @@ class Timer {
   /**
    * @brief Elapsed, last elapsed time duration
    */
-  template <typename T = D>
+  template <typename T = DurationType>
   double Elapsed() const {
-    return elapsed_.count() * Ratio<D, T>();
+    return elapsed_.count() * Ratio<DurationType, T>();
   }
 
   /**
    * @brief Min, shortest time duration recorded
    */
-  template <typename T = D>
+  template <typename T = DurationType>
   double Min() const {
-    return min_.count() * Ratio<D, T>();
+    return min_.count() * Ratio<DurationType, T>();
   }
 
   /**
    * @brief Max, longest time duration recorded
    */
-  template <typename T = D>
+  template <typename T = DurationType>
   double Max() const {
-    return max_.count() * Ratio<D, T>();
+    return max_.count() * Ratio<DurationType, T>();
   }
 
   /**
    * @brief Average, average time duration
    */
-  template <typename T = D>
+  template <typename T = DurationType>
   double Average() const {
-    return total_.count() * Ratio<D, T>() / iteration_;
+    return total_.count() * Ratio<DurationType, T>() / iteration_;
   }
 
   /**
@@ -145,7 +145,7 @@ class Timer {
     running_ = false;
   }
 
-  template <typename T = D>
+  template <typename T = DurationType>
   void Sleep(int tick) {
     T duration(tick);
     std::this_thread::sleep_for(duration);
@@ -155,13 +155,13 @@ class Timer {
    * @brief BaseUnit
    * @return base unit of the timer when it's instantiated
    */
-  std::string BaseUnit() { return DurationUnit<D>(); }
+  std::string BaseUnit() { return DurationUnit<DurationType>(); }
 
   /**
    * @brief Unit
    * @return unit of the timer with duration type T
    */
-  template <typename T = D>
+  template <typename T = DurationType>
   std::string Unit() {
     return DurationUnit<T>();
   }
@@ -170,7 +170,7 @@ class Timer {
    * @brief Report
    * @param unit_name A string representing the unit
    */
-  template <typename T = D>
+  template <typename T = DurationType>
   void Report(std::ostream& os = std::cout) const {
     os << name_ << " - iterations: " << iteration_
        << ", unit: " << DurationUnit<T>() << ", average: " << Average<T>()
@@ -184,10 +184,10 @@ class Timer {
   int report_every_n_iter_{0};
   bool running_{false};
   std::chrono::high_resolution_clock::time_point start_;
-  D min_{D::max()};
-  D max_{D::min()};
-  D elapsed_{0};
-  D total_{0};
+  DurationType min_{DurationType::max()};
+  DurationType max_{DurationType::min()};
+  DurationType elapsed_{0};
+  DurationType total_{0};
 };
 
 typedef Timer<sec> TimerSec;
@@ -195,22 +195,23 @@ typedef Timer<ms> TimerMs;
 typedef Timer<us> TimerUs;
 typedef Timer<ns> TimerNs;
 
-template <typename C>
+template <typename ClockType>
 void PrintClockData() {
   std::cout << "- precision: ";
   // if time unit is less or equal one millisecond
-  typedef typename C::period P;  // type of time unit
-  if (std::ratio_less_equal<P, std::milli>::value) {
+  typedef typename ClockType::period RatioType;  // type of time unit
+  if (std::ratio_less_equal<RatioType, std::milli>::value) {
     // convert to and print as milliseconds
-    typedef typename std::ratio_multiply<P, std::kilo>::type TT;
+    typedef typename std::ratio_multiply<RatioType, std::kilo>::type TT;
     std::cout << std::fixed << static_cast<double>(TT::num) / TT::den << " ms"
               << std::endl;
   } else {
     // print as seconds
-    std::cout << std::fixed << static_cast<double>(P::num) / P::den << " sec"
-              << std::endl;
+    std::cout << std::fixed << static_cast<double>(RatioType::num) /
+                                   RatioType::den << " sec" << std::endl;
   }
-  std::cout << "- is_steady: " << std::boolalpha << C::is_steady << std::endl;
+  std::cout << "- is_steady: " << std::boolalpha << ClockType::is_steady
+            << std::endl;
 }
 
 }  // namespace kr
