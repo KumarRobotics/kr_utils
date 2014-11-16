@@ -53,7 +53,7 @@ T GetParam(const std::string& param_name) {
  * @return Path of url
  * @note Assume url contains no special variable needs to be resolved
  */
-std::string PackageUrlToFullPath(const std::string url) {
+static inline std::string PackageUrlToFullPath(const std::string url) {
   static const std::string pkg_prefix("package://");
   static const size_t prefix_len = pkg_prefix.length();
   const size_t rest = url.find('/', prefix_len);
