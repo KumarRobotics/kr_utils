@@ -48,7 +48,7 @@ T GetParam(const std::string& param_name) {
 }
 
 /**
- * @brief The UrlParser class
+ * @brief The RosUrlParser class
  */
 class RosUrlParser {
  public:
@@ -71,7 +71,7 @@ class RosUrlParser {
 
   /**
    * @brief PackageUrlToFullPath Get full file path based on package url
-   * @param url Url start with package://
+   * @param url Resolved url start with package://
    * @return Path of url
    * @note Assume url contains no special variable needs to be resolved
    */
@@ -89,6 +89,7 @@ class RosUrlParser {
 
     return pkg_path + url.substr(rest);
   }
+
   /**
    * @brief ResolveUrl Resolve variables in url
    * @return Resolved url
