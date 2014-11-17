@@ -117,10 +117,10 @@ class RosUrlParser {
         // substitute $ROS_HOME
         std::string ros_home;
         char* ros_home_env;
-        if ((ros_home_env = getenv("ROS_HOME"))) {
+        if ((ros_home_env = std::getenv("ROS_HOME"))) {
           // use environment variable
           ros_home = ros_home_env;
-        } else if ((ros_home_env = getenv("HOME"))) {
+        } else if ((ros_home_env = std::getenv("HOME"))) {
           // use "$HOME/.ros"
           ros_home = ros_home_env;
           ros_home += "/.ros";
