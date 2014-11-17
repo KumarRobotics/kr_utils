@@ -48,28 +48,6 @@ T GetParam(const std::string& param_name) {
 }
 
 /**
- * @brief PackageUrlToFullPath Get full file path based on package url
- * @param url Url start with package://
- * @return Path of url
- * @note Assume url contains no special variable needs to be resolved
- */
-static inline std::string PackageUrlToFullPath(const std::string url) {
-  static const std::string pkg_prefix("package://");
-  static const size_t prefix_len = pkg_prefix.length();
-  const size_t rest = url.find('/', prefix_len);
-  const std::string pkg(url.substr(prefix_len, rest - prefix_len));
-
-  // Look up the ROS package path name.
-  const std::string pkg_path(ros::package::getPath(pkg));
-  if (pkg_path.empty()) {
-    ROS_WARN_STREAM("unknown package: " << pkg << " (ignored)");
-    return pkg_path;
-  }
-
-  return pkg_path + url.substr(rest);
-}
-
-/**
  * @brief The UrlParser class
  */
 class RosUrlParser {
@@ -83,14 +61,34 @@ class RosUrlParser {
     const std::string url_resolved(ResolveUrl(url));
     const auto url_type = ParseUrl(url_resolved);
     if (url_type == UrlType::URL_FILE) {
-      return url_resolved.substr(7);
+      return url_resolved.substr(file_proto_len());
     }
     if (url_type == UrlType::URL_PACKAGE) {
       return PackageUrlToFullPath(url_resolved);
     }
-    return std::string{};
+    return std::string();
   }
 
+  /**
+   * @brief PackageUrlToFullPath Get full file path based on package url
+   * @param url Url start with package://
+   * @return Path of url
+   * @note Assume url contains no special variable needs to be resolved
+   */
+  static std::string PackageUrlToFullPath(const std::string& url) {
+    const auto prefix_len = pkg_proto_len();
+    const auto rest = url.find('/', prefix_len);
+    const std::string pkg(url.substr(prefix_len, rest - prefix_len));
+
+    // Look up the ROS package path name.
+    const std::string pkg_path(ros::package::getPath(pkg));
+    if (pkg_path.empty()) {
+      ROS_WARN_STREAM("unknown package: " << pkg << " (ignored)");
+      return pkg_path;
+    }
+
+    return pkg_path + url.substr(rest);
+  }
   /**
    * @brief ResolveUrl Resolve variables in url
    * @return Resolved url
@@ -155,6 +153,19 @@ class RosUrlParser {
   }
 
  private:
+  static const char* pkg_proto() {
+    static const char pkg_proto[] = "package://";
+    return pkg_proto;
+  }
+
+  static const char* file_proto() {
+    static const char file_proto[] = "file://";
+    return file_proto;
+  }
+
+  static const size_t pkg_proto_len() { return std::strlen(pkg_proto()); }
+  static const size_t file_proto_len() { return std::strlen(file_proto()); }
+
   enum class UrlType {
     URL_EMPTY = 0,  // empty string
     URL_FILE,       // file:
@@ -162,20 +173,16 @@ class RosUrlParser {
     URL_INVALID     // anything >= is invalid
   };
 
-  /**
-   * @brief ParseUrl Parse resolved url
-   * @return Url type
-   */
   static UrlType ParseUrl(const std::string& url_resolved) {
     if (url_resolved == "") {
       return UrlType::URL_EMPTY;
     }
-    if (url_resolved.substr(0, 8) == "file:///") {
+    if (url_resolved.substr(0, file_proto_len()) == file_proto()) {
       return UrlType::URL_FILE;
     }
-    if (url_resolved.substr(0, 10) == "package://") {
-      auto rest = url_resolved.find('/', 10);
-      if (rest < url_resolved.length() - 1 && rest > 10) {
+    if (url_resolved.substr(0, pkg_proto_len()) == pkg_proto()) {
+      const auto rest = url_resolved.find('/', pkg_proto_len());
+      if (rest < url_resolved.length() - 1 && rest > pkg_proto_len()) {
         return UrlType::URL_PACKAGE;
       }
     }
