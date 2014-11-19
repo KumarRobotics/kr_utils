@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
     INCLUDE_DIRS include
-    CATKIN_DEPENDS roscpp
+    CATKIN_DEPENDS roscpp roslib
     )
 
 include_directories(
@@ -22,6 +22,7 @@ add_executable(test_pretty_print test/test_pretty_print.cpp)
 add_executable(test_pretty_printer test/test_pretty_printer.cpp)
 add_executable(test_profiler test/test_profiler.cpp)
 add_executable(test_sample test/test_sample.cpp)
+add_executable(test_termcolor test/test_termcolor.cpp)
 add_executable(test_url_parser test/test_url_parser.cpp)
 target_link_libraries(test_url_parser ${catkin_LIBRARIES})
 

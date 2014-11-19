@@ -387,6 +387,8 @@ void win_change_attributes(std::ostream& stream, int foreground,
 
 }  // namespace termcolor
 
+namespace tc = termcolor;
+
 #undef OS_WINDOWS
 #undef OS_MACOS
 #undef OS_LINUX

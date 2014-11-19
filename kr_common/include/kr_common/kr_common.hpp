@@ -6,5 +6,6 @@
 #include <kr_common/pretty_printer.hpp>
 #include <kr_common/ros_helper.hpp>
 #include <kr_common/timer.hpp>
+#include <kr_common/termcolor.hpp>
 
 #endif // KR_COMMON_HPP_
