@@ -1,19 +1,20 @@
-# Findg2o.cmake - Find g2o
+# FindG2o.cmake - Find g2o
+# quchao@seas.upenn.edu (Chao Qu)
 # Modified from FindGlog.cmake by alexs.mac@gmail.com (Alex Stewart)
 #
-# Findg2o.cmake - Find g2o library.
+# FindG2o.cmake - Find g2o library.
 #
 # This module defines the following variables:
 #
-# G2O_FOUND: TRUE iff g2o is found.
-# G2O_INCLUDE_DIRS: Include directories for g2o.
-# G2O_LIBRARIES: Libraries required to link g2o.
+# G2o_FOUND:        TRUE iff g2o is found.
+# G2o_INCLUDE_DIRS: Include directories for g2o.
+# G2o_LIBRARIES:    Libraries required to link g2o.
 #
 # The following variables control the behaviour of this module:
 #
-# G2O_INCLUDE_DIR_HINTS: List of additional directories in which to
+# G2o_INCLUDE_DIR_HINTS: List of additional directories in which to
 #                        search for g2o includes, e.g: /foo/include.
-# G2O_LIBRARY_DIR_HINTS: List of additional directories in which to
+# G2o_LIBRARY_DIR_HINTS: List of additional directories in which to
 #                        search for g2o libraries, e.g: /bar/lib.
 #
 # The following variables are also defined by this module, but in line with
@@ -27,21 +28,21 @@
 # explicitly defines a cache variable), then they will be used verbatim,
 # bypassing the HINTS variables and other hard-coded search locations.
 #
-# G2O_INCLUDE_DIR: Include directory for g2o, not including the
+# G2o_INCLUDE_DIR: Include directory for g2o, not including the
 #                  include directory of any dependencies.
-# G2O_LIBRARY: g2o library, not including the libraries of any
+# G2o_LIBRARY: g2o library, not including the libraries of any
 #              dependencies.
 
 # Called if we failed to find g2o or any of it's required dependencies,
 # unsets all public (designed to be used externally) variables and reports
 # error message at priority depending upon [REQUIRED/QUIET/<NONE>] argument.
-macro(G2O_REPORT_NOT_FOUND REASON_MSG)
-    unset(G2O_FOUND)
-    unset(G2O_INCLUDE_DIRS)
-    unset(G2O_LIBRARIES)
+macro(G2o_REPORT_NOT_FOUND REASON_MSG)
+    unset(G2o_FOUND)
+    unset(G2o_INCLUDE_DIRS)
+    unset(G2o_LIBRARIES)
     # Make results of search visible in the CMake GUI if g2o has not
     # been found so that user does not have to toggle to advanced view.
-    mark_as_advanced(CLEAR G2O_INCLUDE_DIR G2O_LIBRARY)
+    mark_as_advanced(CLEAR G2o_INCLUDE_DIR G2o_LIBRARY)
     # Note <package>_FIND_[REQUIRED/QUIETLY] variables defined by FindPackage()
     # use the camelcase library name, not uppercase.
     if(G2o_FIND_QUIETLY)
@@ -53,87 +54,87 @@ macro(G2O_REPORT_NOT_FOUND REASON_MSG)
         # but continues configuration and allows generation.
         message("-- Failed to find g2o - " ${REASON_MSG} ${ARGN})
     endif()
-endmacro(G2O_REPORT_NOT_FOUND)
+endmacro(G2o_REPORT_NOT_FOUND)
 
 # Search user-installed locations first, so that we prefer user installs
 # to system installs where both exist.
-list(APPEND G2O_CHECK_INCLUDE_DIRS
+list(APPEND G2o_CHECK_INCLUDE_DIRS
     /usr/local/include
     /usr/local/homebrew/include # Mac OS X
     /opt/local/var/macports/software # Mac OS X.
     /opt/local/include
     /usr/include)
-list(APPEND G2O_CHECK_LIBRARY_DIRS
+list(APPEND G2o_CHECK_LIBRARY_DIRS
     /usr/local/lib
     /usr/local/homebrew/lib # Mac OS X.
     /opt/local/lib
     /usr/lib)
 
 # Check general hints
-if(G2O_HINTS AND EXISTS ${G2O_HINTS})
-    set(G2O_INCLUDE_DIR_HINTS ${G2O_HINTS}/include)
-    set(G2O_LIBRARY_DIR_HINTS ${G2O_HINTS}/lib)
+if(G2o_HINTS AND EXISTS ${G2o_HINTS})
+    set(G2o_INCLUDE_DIR_HINTS ${G2o_HINTS}/include)
+    set(G2o_LIBRARY_DIR_HINTS ${G2o_HINTS}/lib)
 endif()
 
-set(G2O_INCLUDE_FILE g2o/config.h)
+set(G2o_INCLUDE_FILE g2o/config.h)
 # Search supplied hint directories first if supplied.
-find_path(G2O_INCLUDE_DIR
-    NAMES ${G2O_INCLUDE_FILE}
-    PATHS ${G2O_INCLUDE_DIR_HINTS}
-          ${G2O_CHECK_INCLUDE_DIRS}
+find_path(G2o_INCLUDE_DIR
+    NAMES ${G2o_INCLUDE_FILE}
+    PATHS ${G2o_INCLUDE_DIR_HINTS}
+          ${G2o_CHECK_INCLUDE_DIRS}
     NO_DEFAULT_PATH)
-if(NOT G2O_INCLUDE_DIR OR NOT EXISTS ${G2O_INCLUDE_DIR})
-G2O_REPORT_NOT_FOUND("Could not find g2o include directory, "
-    "set G2O_INCLUDE_DIR to directory containing g2o/config.h")
+if(NOT G2o_INCLUDE_DIR OR NOT EXISTS ${G2o_INCLUDE_DIR})
+G2o_REPORT_NOT_FOUND("Could not find g2o include directory, "
+    "set G2o_INCLUDE_DIR to directory containing g2o/config.h")
 endif()
 
-find_library(G2O_LIBRARY
+find_library(G2o_LIBRARY
     NAMES g2o_core
-    PATHS ${G2O_LIBRARY_DIR_HINTS}
-          ${G2O_CHECK_LIBRARY_DIRS}
+    PATHS ${G2o_LIBRARY_DIR_HINTS}
+          ${G2o_CHECK_LIBRARY_DIRS}
     NO_DEFAULT_PATH)
-if(NOT G2O_LIBRARY OR NOT EXISTS ${G2O_LIBRARY})
-G2O_REPORT_NOT_FOUND("Could not find g2o library, "
-    "set G2O_LIBRARY to full path to libg2o_core.")
+if(NOT G2o_LIBRARY OR NOT EXISTS ${G2o_LIBRARY})
+G2o_REPORT_NOT_FOUND("Could not find g2o library, "
+    "set G2o_LIBRARY to full path to libg2o_core.")
 else()
-    string(REGEX MATCH ".*/" G2O_LIBRARY_DIR ${G2O_LIBRARY})
+    string(REGEX MATCH ".*/" G2o_LIBRARY_DIR ${G2o_LIBRARY})
 endif()
 
-# Mark internally as found, then verify. G2O_REPORT_NOT_FOUND() unsets
+# Mark internally as found, then verify. G2o_REPORT_NOT_FOUND() unsets
 # if called.
-set(G2O_FOUND TRUE)
+set(G2o_FOUND TRUE)
 
-# Catch case when caller has set G2O_INCLUDE_DIR in the cache / GUI and
+# Catch case when caller has set G2o_INCLUDE_DIR in the cache / GUI and
 # thus FIND_[PATH/LIBRARY] are not called, but specified locations are
 # invalid, otherwise we would report the library as found.
-if(G2O_INCLUDE_DIR AND NOT EXISTS ${G2O_INCLUDE_DIR}/${G2O_INCLUDE_FILE})
-G2O_REPORT_NOT_FOUND("Caller defined G2O_INCLUDE_DIR:"
-    " ${G2O_INCLUDE_DIR} does not contain g2o/config.h header.")
+if(G2o_INCLUDE_DIR AND NOT EXISTS ${G2o_INCLUDE_DIR}/${G2o_INCLUDE_FILE})
+G2o_REPORT_NOT_FOUND("Caller defined G2o_INCLUDE_DIR:"
+    " ${G2o_INCLUDE_DIR} does not contain g2o/config.h header.")
 endif()
 
 # TODO: This regex for g2o library is pretty primitive, we use lowercase
 #       for comparison to handle Windows using CamelCase library names, could
 #       this check be better?
-string(TOLOWER "${G2O_LIBRARY}" LOWERCASE_G2O_LIBRARY)
-if(G2O_LIBRARY AND NOT "${LOWERCASE_G2O_LIBRARY}" MATCHES ".*g2o_*")
-G2O_REPORT_NOT_FOUND("Caller defined G2O_LIBRARY: "
-    "${G2O_LIBRARY} does not match g2o.")
+string(TOLOWER "${G2o_LIBRARY}" LOWERCASE_G2o_LIBRARY)
+if(G2o_LIBRARY AND NOT "${LOWERCASE_G2o_LIBRARY}" MATCHES ".*g2o_*")
+G2o_REPORT_NOT_FOUND("Caller defined G2o_LIBRARY: "
+    "${G2o_LIBRARY} does not match g2o.")
 endif()
 
 # Set standard CMake FindPackage variables if found.
-if(G2O_FOUND)
-    list(APPEND G2O_INCLUDE_DIRS ${G2O_INCLUDE_DIR} /usr/include/suitesparse)
-    file(GLOB G2O_LIBRARIES ${G2O_LIBRARY_DIR}libg2o*)
-    list(APPEND G2O_LIBRARIES ${G2O_LIBRARIES} cholmod cxsparse)
+if(G2o_FOUND)
+    list(APPEND G2o_INCLUDE_DIRS ${G2o_INCLUDE_DIR} /usr/include/suitesparse)
+    file(GLOB G2o_LIBRARIES ${G2o_LIBRARY_DIR}libg2o*)
+    list(APPEND G2o_LIBRARIES ${G2o_LIBRARIES} cholmod cxsparse)
 endif()
 
 # Handle REQUIRED / QUIET optional arguments.
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(G2o DEFAULT_MSG
-    G2O_INCLUDE_DIRS G2O_LIBRARIES)
+    G2o_INCLUDE_DIRS G2o_LIBRARIES)
 
 # Only mark internal variables as advanced if we found g2o, otherwise
 # leave them visible in the standard GUI for the user to set manually.
-if(G2O_FOUND)
-    mark_as_advanced(FORCE G2O_INCLUDE_DIR G2O_LIBRARY)
+if(G2o_FOUND)
+    mark_as_advanced(FORCE G2o_INCLUDE_DIR G2o_LIBRARY)
 endif()

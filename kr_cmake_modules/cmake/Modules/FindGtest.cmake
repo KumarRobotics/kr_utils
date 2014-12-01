@@ -1,19 +1,20 @@
-# Findgtest.cmake - Find gogole test
+# FindGtest.cmake - Find gogole test
+# quchao@seas.upenn.edu (Chao Qu)
 # Modified from FindGlog.cmake by alexs.mac@gmail.com (Alex Stewart)
 #
-# Findgtest.cmake - Find Google test library.
+# FindGtest.cmake - Find Google test library.
 #
 # This module defines the following variables:
 #
-# GTEST_FOUND: TRUE iff gtest is found.
-# GTEST_INCLUDE_DIRS: Include directories for gtest.
-# GTEST_LIBRARIES: Libraries required to link gtest.
+# Gtest_FOUND: TRUE iff gtest is found.
+# Gtest_INCLUDE_DIRS: Include directories for gtest.
+# Gtest_LIBRARIES: Libraries required to link gtest.
 #
 # The following variables control the behaviour of this module:
 #
-# GTEST_INCLUDE_DIR_HINTS: List of additional directories in which to
+# Gtest_INCLUDE_DIR_HINTS: List of additional directories in which to
 #                          search for gtest includes, e.g: /foo/include.
-# GTEST_LIBRARY_DIR_HINTS: List of additional directories in which to
+# Gtest_LIBRARY_DIR_HINTS: List of additional directories in which to
 #                          search for gtest libraries, e.g: /bar/lib.
 #
 # The following variables are also defined by this module, but in line with
@@ -27,21 +28,21 @@
 # explicitly defines a cache variable), then they will be used verbatim,
 # bypassing the HINTS variables and other hard-coded search locations.
 #
-# GTEST_INCLUDE_DIR: Include directory for gtest, not including the
+# Gtest_INCLUDE_DIR: Include directory for gtest, not including the
 #                    include directory of any dependencies.
-# GTEST_LIBRARY: gtest library, not including the libraries of any
+# Gtest_LIBRARY: gtest library, not including the libraries of any
 #                dependencies.
 
 # Called if we failed to find gtest or any of it's required dependencies,
 # unsets all public (designed to be used externally) variables and reports
 # error message at priority depending upon [REQUIRED/QUIET/<NONE>] argument.
-macro(GTEST_REPORT_NOT_FOUND REASON_MSG)
-    unset(GTEST_FOUND)
-    unset(GTEST_INCLUDE_DIRS)
-    unset(GTEST_LIBRARIES)
+macro(Gtest_REPORT_NOT_FOUND REASON_MSG)
+    unset(Gtest_FOUND)
+    unset(Gtest_INCLUDE_DIRS)
+    unset(Gtest_LIBRARIES)
     # Make results of search visible in the CMake GUI if gtest has not
     # been found so that user does not have to toggle to advanced view.
-    mark_as_advanced(CLEAR GTEST_INCLUDE_DIR GTEST_LIBRARY)
+    mark_as_advanced(CLEAR Gtest_INCLUDE_DIR Gtest_LIBRARY)
     # Note <package>_FIND_[REQUIRED/QUIETLY] variables defined by FindPackage()
     # use the camelcase library name, not uppercase.
     if(Gtest_FIND_QUIETLY)
@@ -53,85 +54,85 @@ macro(GTEST_REPORT_NOT_FOUND REASON_MSG)
         # but continues configuration and allows generation.
         message("-- Failed to find gtest - " ${REASON_MSG} ${ARGN})
     endif()
-endmacro(GTEST_REPORT_NOT_FOUND)
+endmacro(Gtest_REPORT_NOT_FOUND)
 
 # Search user-installed locations first, so that we prefer user installs
 # to system installs where both exist.
-list(APPEND GTEST_CHECK_INCLUDE_DIRS
+list(APPEND Gtest_CHECK_INCLUDE_DIRS
     /usr/local/include
     /usr/local/homebrew/include # Mac OS X
     /opt/local/var/macports/software # Mac OS X.
     /opt/local/include
     /usr/include)
-list(APPEND GTEST_CHECK_LIBRARY_DIRS
+list(APPEND Gtest_CHECK_LIBRARY_DIRS
     /usr/local/lib
     /usr/local/homebrew/lib # Mac OS X.
     /opt/local/lib
     /usr/lib)
 
 # Check general hints
-if(GTEST_HINTS AND EXISTS ${GTEST_HINTS})
-    set(GTEST_INCLUDE_DIR_HINTS ${GTEST_HINTS}/include)
-    set(GTEST_LIBRARY_DIR_HINTS ${GTEST_HINTS}/lib/.libs)
+if(Gtest_HINTS AND EXISTS ${Gtest_HINTS})
+    set(Gtest_INCLUDE_DIR_HINTS ${Gtest_HINTS}/include)
+    set(Gtest_LIBRARY_DIR_HINTS ${Gtest_HINTS}/lib/.libs)
 endif()
 
 # Search supplied hint directories first if supplied.
-find_path(GTEST_INCLUDE_DIR
+find_path(Gtest_INCLUDE_DIR
     NAMES gtest/gtest.h
-    PATHS ${GTEST_INCLUDE_DIR_HINTS}
-    ${GTEST_CHECK_INCLUDE_DIRS}
+    PATHS ${Gtest_INCLUDE_DIR_HINTS}
+    ${Gtest_CHECK_INCLUDE_DIRS}
     NO_DEFAULT_PATH)
-if(NOT GTEST_INCLUDE_DIR OR NOT EXISTS ${GTEST_INCLUDE_DIR})
-    GTEST_REPORT_NOT_FOUND("Could not find gtest include directory, "
-        "set GTEST_INCLUDE_DIR to directory containing gtest/gtest.h")
+if(NOT Gtest_INCLUDE_DIR OR NOT EXISTS ${Gtest_INCLUDE_DIR})
+    Gtest_REPORT_NOT_FOUND("Could not find gtest include directory, "
+        "set Gtest_INCLUDE_DIR to directory containing gtest/gtest.h")
 endif()
 
-find_library(GTEST_LIBRARY
+find_library(Gtest_LIBRARY
     NAMES gtest
-    PATHS ${GTEST_LIBRARY_DIR_HINTS}
-    ${GTEST_CHECK_LIBRARY_DIRS}
+    PATHS ${Gtest_LIBRARY_DIR_HINTS}
+    ${Gtest_CHECK_LIBRARY_DIRS}
     NO_DEFAULT_PATH)
-if(NOT GTEST_LIBRARY OR NOT EXISTS ${GTEST_LIBRARY})
-    GTEST_REPORT_NOT_FOUND("Could not find gtest library, "
-        "set GTEST_LIBRARY to full path to libgtest.")
+if(NOT Gtest_LIBRARY OR NOT EXISTS ${Gtest_LIBRARY})
+    Gtest_REPORT_NOT_FOUND("Could not find gtest library, "
+        "set Gtest_LIBRARY to full path to libgtest.")
 else()
-    string(REGEX MATCH ".*/" GTEST_LIBRARY_DIR ${GTEST_LIBRARY})
+    string(REGEX MATCH ".*/" Gtest_LIBRARY_DIR ${Gtest_LIBRARY})
 endif()
 
-# Mark internally as found, then verify. GTEST_REPORT_NOT_FOUND() unsets
+# Mark internally as found, then verify. Gtest_REPORT_NOT_FOUND() unsets
 # if called.
-set(GTEST_FOUND TRUE)
+set(Gtest_FOUND TRUE)
 
-# Catch case when caller has set GTEST_INCLUDE_DIR in the cache / GUI and
+# Catch case when caller has set Gtest_INCLUDE_DIR in the cache / GUI and
 # thus FIND_[PATH/LIBRARY] are not called, but specified locations are
 # invalid, otherwise we would report the library as found.
-if(GTEST_INCLUDE_DIR AND NOT EXISTS ${GTEST_INCLUDE_DIR}/gtest/gtest.h)
-    GTEST_REPORT_NOT_FOUND("Caller defined GTEST_INCLUDE_DIR:"
-        " ${GTEST_INCLUDE_DIR} does not contain gtest/gtest.h header.")
+if(Gtest_INCLUDE_DIR AND NOT EXISTS ${Gtest_INCLUDE_DIR}/gtest/gtest.h)
+    Gtest_REPORT_NOT_FOUND("Caller defined Gtest_INCLUDE_DIR:"
+        " ${Gtest_INCLUDE_DIR} does not contain gtest/gtest.h header.")
 endif()
 
 # TODO: This regex for gtest library is pretty primitive, we use lowercase
 #       for comparison to handle Windows using CamelCase library names, could
 #       this check be better?
-string(TOLOWER "${GTEST_LIBRARY}" LOWERCASE_GTEST_LIBRARY)
-if(GTEST_LIBRARY AND NOT "${LOWERCASE_GTEST_LIBRARY}" MATCHES ".*gtest[^/]*")
-    GTEST_REPORT_NOT_FOUND("Caller defined GTEST_LIBRARY: "
-        "${GTEST_LIBRARY} does not match gtest.")
+string(TOLOWER "${Gtest_LIBRARY}" LOWERCASE_Gtest_LIBRARY)
+if(Gtest_LIBRARY AND NOT "${LOWERCASE_Gtest_LIBRARY}" MATCHES ".*gtest[^/]*")
+    Gtest_REPORT_NOT_FOUND("Caller defined Gtest_LIBRARY: "
+        "${Gtest_LIBRARY} does not match gtest.")
 endif()
 
 # Set standard CMake FindPackage variables if found.
-if(GTEST_FOUND)
-    set(GTEST_INCLUDE_DIRS ${GTEST_INCLUDE_DIR})
-    file(GLOB GTEST_LIBRARIES ${GTEST_LIBRARY_DIR}lib*.so)
+if(Gtest_FOUND)
+    set(Gtest_INCLUDE_DIRS ${Gtest_INCLUDE_DIR})
+    file(GLOB Gtest_LIBRARIES ${Gtest_LIBRARY_DIR}lib*.so)
 endif()
 
 # Handle REQUIRED / QUIET optional arguments.
 include(FindPackageHandleStandardArgs)
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(Gtest DEFAULT_MSG
-    GTEST_INCLUDE_DIRS GTEST_LIBRARIES)
+    Gtest_INCLUDE_DIRS Gtest_LIBRARIES)
 
 # Only mark internal variables as advanced if we found gtest, otherwise
 # leave them visible in the standard GUI for the user to set manually.
-if(GTEST_FOUND)
-    mark_as_advanced(FORCE GTEST_INCLUDE_DIR GTEST_LIBRARY)
+if(Gtest_FOUND)
+    mark_as_advanced(FORCE Gtest_INCLUDE_DIR Gtest_LIBRARY)
 endif()
