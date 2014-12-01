@@ -14,7 +14,7 @@ class SO3Test : public testing::Test {
   }
 
  protected:
-  kr::mat3<double> Rx, Ry, Rz;
+  kr::Mat3<double> Rx, Ry, Rz;
 };
 
 // Not implemented
@@ -52,8 +52,8 @@ TEST_F(SO3Test, RotationXYZ) {
 }
 
 TEST_F(SO3Test, RotToEulerZYX) {
-  const kr::mat3<double> R = Rz * Ry * Rx;
-  const kr::vec3<double> rpy = kr::rotToEulerZYX(R);
+  const kr::Mat3<double> R = Rz * Ry * Rx;
+  const kr::Vec3<double> rpy = kr::rotToEulerZYX(R);
 
   EXPECT_CLOSE(rpy[0], M_PI / 3);
   EXPECT_CLOSE(rpy[1], M_PI / 3);
@@ -61,16 +61,16 @@ TEST_F(SO3Test, RotToEulerZYX) {
 }
 
 TEST(RodriguesTest, RodriguesToQuat) {
-  const kr::vec3<double> rvec_zero(0, 0, 0);
-  Eigen::Quaterniond q0 = kr::rodriguesToQuat(rvec_zero);
+  const kr::Vec3<double> rvec_zero(0, 0, 0);
+  kr::Quatd q0 = kr::rodriguesToQuat(rvec_zero);
   EXPECT_EQ(q0.w(), 1.0);
   EXPECT_EQ(q0.x(), 0.0);
   EXPECT_EQ(q0.y(), 0.0);
   EXPECT_EQ(q0.z(), 0.0);
 
   const double r = M_PI / std::sqrt(3);
-  const kr::vec3<double> rvec(r, r, r);
-  Eigen::Quaterniond q = kr::rodriguesToQuat(rvec);
+  const kr::Vec3<double> rvec(r, r, r);
+  kr::Quatd q = kr::rodriguesToQuat(rvec);
   EXPECT_CLOSE(q.w(), 0.0);
   EXPECT_CLOSE(q.x(), r / M_PI);
 }

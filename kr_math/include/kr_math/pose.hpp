@@ -23,30 +23,30 @@ namespace kr {
 
 /**
  * @brief Pose, an orientation and position in R3.
- * 
+ *
  * @note Some important notes on convention:
- * 
- * When we write _A to B_ transformation (or transform), it is in reference to 
+ *
+ * When we write _A to B_ transformation (or transform), it is in reference to
  * the operation effecuated by matrix H, such that:
- * 
+ *
  * b = H * a, where a is a vector in the A frame and b is that same vector
  * in the B frame.
- * 
+ *
  * kr::Pose stores `q`, which rotates vectors from body to world frame,
  * and `p`, the center of the body as expressed in the world frame.
- * 
+ *
  * Transforming a vector v from world to camera (body) is performed with:
- * 
+ *
  * vb = R(q') * (vw - p), where R(.) maps from S(4) to SO(3).
- * 
+ *
  * It is important to note that p is equivalent to the body origin in world
  * frame, often denoted wTb.
- * 
+ *
  */
 template <typename Scalar> struct Pose {
 private:
-  kr::quat<Scalar> q_; /**< Orientation (body to world transform, or wRb) */
-  kr::vec3<Scalar> p_; /**< Position (origin to body vector) */
+  kr::Quat<Scalar> q_; /**< Orientation (body to world transform, or wRb) */
+  kr::Vec3<Scalar> p_; /**< Position (origin to body vector) */
 
 public:
   /**
@@ -64,17 +64,17 @@ public:
    * @param wQb Body to world rotation.
    * @param pInW Origin to body vector.
    */
-  Pose(const quat<Scalar> &wQb, const vec3<Scalar> &pInW) : q_(wQb), p_(pInW) {}
+  Pose(const Quat<Scalar> &wQb, const Vec3<Scalar> &pInW) : q_(wQb), p_(pInW) {}
 
   /**
    * @brief Construct from a 4x4 homogenous transformation matrix.
    * @param bHw 4x4 matrix representing the body to world transform.
-   * 
+   *
    * @note wHb is expected to perform the operation: vw = wHb * vb.
    */
-  Pose(const kr::mat4<Scalar>& wHb) : 
+  Pose(const kr::Mat4<Scalar>& wHb) :
     q_(wHb.template block<3,3>(0,0)), p_(wHb.template block<3,1>(0,3)) {}
-  
+
 #ifdef KR_MATH_ROS_CONVERSIONS
   /**
    * @brief Construct pose from ROS message.
@@ -82,13 +82,13 @@ public:
    * @note Loss of accuracy will occur if Scalar is float32.
    */
   Pose(const geometry_msgs::Pose &geo) {
-    q_ = kr::quat<Scalar>(geo.orientation.w, geo.orientation.x,
+    q_ = kr::Quat<Scalar>(geo.orientation.w, geo.orientation.x,
                          geo.orientation.y, geo.orientation.z);
     p_[0] = geo.position.x;
     p_[1] = geo.position.y;
     p_[2] = geo.position.z;
   }
-  
+
   /**
    * @brief Explicit cast to ROS geometry_msgs::Pose.
    */
@@ -104,17 +104,17 @@ public:
     return geo;
   }
 #endif
-  
+
 #ifdef KR_MATH_GTSAM_CONVERSIONS
   /**
    * @brief Construct pose from GTSAM Pose3.
-   * @param gtpose Instance of GTSAM 6DOF pose. GTSAM poses store a body to 
+   * @param gtpose Instance of GTSAM 6DOF pose. GTSAM poses store a body to
    * world transformation.
    */
-  Pose(const gtsam::Pose3& gtpose) : 
-    q_(gtpose.rotation().toQuaternion().cast<Scalar>()), 
+  Pose(const gtsam::Pose3& gtpose) :
+    q_(gtpose.rotation().toQuaternion().cast<Scalar>()),
     p_(gtpose.translation().vector().cast<Scalar>()) {}
-  
+
   /**
    * @brief Explicit cast to GTSAM Pose3.
    * @note Converts to the GTSAM convention of body to world.
@@ -124,42 +124,42 @@ public:
     return gtsam::Pose3(rot, gtsam::Point3(p_.template cast<double>()));
   }
 #endif
-  
+
   /**
    * @brief Position of this pose in the world frame.
-   * @return kr::vec3
+   * @return kr::Vec3
    */
-  const kr::vec3<Scalar>& p() const { return p_; }
-  kr::vec3<Scalar>& p() { return p_; }
-  
+  const kr::Vec3<Scalar>& p() const { return p_; }
+  kr::Vec3<Scalar>& p() { return p_; }
+
   /**
    * @brief Quaternion that performs the body to world rotation on vectors.
-   * @return kr::quat
+   * @return kr::Quat
    */
-  const kr::quat<Scalar>& q() const { return q_; }
-  kr::quat<Scalar>& q() { return q_; }
-  
+  const kr::Quat<Scalar>& q() const { return q_; }
+  kr::Quat<Scalar>& q() { return q_; }
+
   /**
    * @brief Construct a pose from an rvec/tvec pair.
-   * 
+   *
    * @param rvec Rotation vector. If R = exp(rvec), then R*v will rotate vector
    * v from world to body frame.
    * @param tvec Translation vector, or t = -R*p.
-   * 
+   *
    * @return The corresponding pose.
-   * 
+   *
    * @note The vectors accepted here are in the same form produced by OpenCV.
    */
-  static Pose<Scalar> fromVectors(const vec3<Scalar>& rvec,
-                                  const vec3<Scalar>& tvec) {
-    vec3<Scalar> rnorm(0.0,0.0,0.0);
+  static Pose<Scalar> fromVectors(const Vec3<Scalar>& rvec,
+                                  const Vec3<Scalar>& tvec) {
+    Vec3<Scalar> rnorm(0.0,0.0,0.0);
     const Scalar rn = rvec.norm();
     if (rn > std::numeric_limits<Scalar>::epsilon()*10) {
-      rnorm = rvec / rn; 
+      rnorm = rvec / rn;
     }
     const Eigen::AngleAxis<Scalar> aa(rn, rnorm);
     Pose<Scalar> pose;
-    pose.q_ = kr::quat<Scalar>(aa).conjugate();
+    pose.q_ = kr::Quat<Scalar>(aa).conjugate();
     pose.p_ = -(pose.q_.matrix() * tvec);
     return pose;
   }
@@ -167,19 +167,19 @@ public:
   /**
    * @brief Convert this pose so that it is expressed in the body frame of the
    * argument.
-   * 
+   *
    * @param alt Treat as identity reference frame.
    * @return The receiver, as expressed in frame alt.
    */
   Pose<Scalar> expressedIn(const Pose<Scalar> &alt) const {
-    const kr::vec3<Scalar> pn = alt.bRw() * (p_ - alt.p_);
+    const kr::Vec3<Scalar> pn = alt.bRw() * (p_ - alt.p_);
     return Pose(alt.q_.conjugate() * q_, pn);
   }
-  
+
   /**
    * @brief Generate the inverse transformation.
    * @return Inverse of this pose: [R^T, -R * p]
-   * 
+   *
    * @note If H is the homo. matrix representation of the receiver, then the
    * returned pose will have representation H' where H * H' = eye(4).
    */
@@ -190,7 +190,7 @@ public:
   /**
    * @brief Difference between this pose and the argument in world frame.
    * @param alt Pose to subtract from the receiver.
-   * 
+   *
    * @return The difference between the receiver and the argument, as expressed
    * in the world frame.
    */
@@ -202,46 +202,46 @@ public:
    * @brief Translation vector of this pose.
    * @return Vector corresponding to: t = -bRw * p.
    */
-  kr::vec3<Scalar> translation() const { return bRw() * -p_; }
-  
+  kr::Vec3<Scalar> translation() const { return bRw() * -p_; }
+
   /**
    * @brief Compose a pose onto the receiver.
    * @param rhs Pose to multiply/add onto this one.
    * @return New pose after composition.
-   * 
-   * @note It is assumed that `rhs` expresses a pose in the body frame of the 
-   * receiver. This operation therefore rotates `rhs` position vector into the 
-   * world frame prior to addition. Orientation is composed from the right, 
+   *
+   * @note It is assumed that `rhs` expresses a pose in the body frame of the
+   * receiver. This operation therefore rotates `rhs` position vector into the
+   * world frame prior to addition. Orientation is composed from the right,
    * corresponding to a multiplication in the body frame.
    */
   Pose<Scalar> composeInBody(const Pose<Scalar>& rhs) const {
     return Pose(q_ * rhs.q_, p_ + q_.matrix() * rhs.p_);
   }
-  
+
   /**
    * @brief Transform a point into the body frame of this pose.
    * @param v Point to transform, expressed in the world frame.
    * @return Point `v` after conversion to the body frame.
    */
-  kr::vec3<Scalar> transformToBody(const kr::vec3<Scalar>& v) const {
+  kr::Vec3<Scalar> transformToBody(const kr::Vec3<Scalar>& v) const {
     return bRw() * (v - p_);
   }
-  
+
   /**
    * @brief Transform a point from the body frame of this pose.
    * @param v Point to transform, expressed in body frame.
    * @return Point `v` after conversion to the world frame.
    */
-  kr::vec3<Scalar> transformFromBody(const kr::vec3<Scalar>& v) const {
+  kr::Vec3<Scalar> transformFromBody(const kr::Vec3<Scalar>& v) const {
     return wRb()*v + p_;
   }
-  
+
   /**
    * @brief SE(3) transformation corresponding to this pose.
    * @return 4x4 matrix that performs the body to world transformation: wHb
    */
-  kr::mat4<Scalar> matrix() const {
-    kr::mat4<Scalar> H;
+  kr::Mat4<Scalar> matrix() const {
+    kr::Mat4<Scalar> H;
     H.template block<3,3>(0,0) = q_.matrix();
     H.template block<3,1>(0,3) = p_;
     H(3,0) = H(3,1) = H(3,2) = 0;
@@ -253,7 +253,7 @@ public:
    * @brief Shorthand for body to world rotation.
    * @note wP = wRb * bP + wTb
    */
-  kr::mat3<Scalar> wRb() const {
+  kr::Mat3<Scalar> wRb() const {
     return q_.matrix();
   }
 
@@ -261,7 +261,7 @@ public:
    * @brief Shorthand for world to body roration.
    * @note bP = bRw * wP + bTw
    */
-  kr::mat3<Scalar> bRw() const {
+  kr::Mat3<Scalar> bRw() const {
     return q_.conjugate().matrix();
   }
 
@@ -270,7 +270,7 @@ public:
    * @note bP = bRw * wP + bTw
    * @note Equivalent to the 'translation' vector.
    */
-  kr::vec3<Scalar> bTw() const {
+  kr::Vec3<Scalar> bTw() const {
     return translation(); //  -(bRw() * wTb())
   }
 
@@ -278,7 +278,7 @@ public:
    * @brief Shorthand for translation vector from world origin to body.
    * @note wP = wRb * bP + wTb
    */
-  const kr::vec3<Scalar>& wTb() const {
+  const kr::Vec3<Scalar>& wTb() const {
     return p_;
   }
 };

@@ -35,7 +35,7 @@ namespace kr {
  * @return Instance of YAML::Node.
  */
 template <typename Scalar, int Rows, int Cols>
-static YAML::Node encodeMat(const kr::mat<Scalar, Rows, Cols> &M) {
+static YAML::Node encodeMat(const kr::Mat<Scalar, Rows, Cols> &M) {
   static_assert(Rows != Eigen::Dynamic && Cols != Eigen::Dynamic,
                 "Static matrices only");
 
@@ -55,7 +55,7 @@ static YAML::Node encodeMat(const kr::mat<Scalar, Rows, Cols> &M) {
  * @return true if decoding is successful, false otherwise.
  */
 template <typename Scalar, int Rows, int Cols>
-static bool decodeMat(const YAML::Node &node, kr::mat<Scalar, Rows, Cols> &M) {
+static bool decodeMat(const YAML::Node &node, kr::Mat<Scalar, Rows, Cols> &M) {
   static_assert(Rows != Eigen::Dynamic && Cols != Eigen::Dynamic,
                 "Static matrices only");
 
@@ -80,10 +80,10 @@ static bool decodeMat(const YAML::Node &node, kr::mat<Scalar, Rows, Cols> &M) {
  * @param M Matrix to emit.
  */
 template <typename Scalar, int Rows, int Cols>
-YAML::Emitter& operator << (YAML::Emitter& out, const kr::mat<Scalar,Rows,Cols>& M) {
+YAML::Emitter& operator << (YAML::Emitter& out, const kr::Mat<Scalar,Rows,Cols>& M) {
   static_assert(Rows != Eigen::Dynamic && Cols != Eigen::Dynamic,
                 "Static matrices only");
-  
+
   out << YAML::Flow;
   out << YAML::BeginSeq;
   for (int i=0; i < Rows; i++) {
@@ -113,19 +113,19 @@ namespace YAML {
  *  Common vector and matrix types.
  */
 
-DECLARE_CONVERT(kr::vec2, float);
-DECLARE_CONVERT(kr::vec2, double);
-DECLARE_CONVERT(kr::vec3, float);
-DECLARE_CONVERT(kr::vec3, double);
-DECLARE_CONVERT(kr::vec4, float);
-DECLARE_CONVERT(kr::vec4, double);
+DECLARE_CONVERT(kr::Vec2, float);
+DECLARE_CONVERT(kr::Vec2, double);
+DECLARE_CONVERT(kr::Vec3, float);
+DECLARE_CONVERT(kr::Vec3, double);
+DECLARE_CONVERT(kr::Vec4, float);
+DECLARE_CONVERT(kr::Vec4, double);
 
-DECLARE_CONVERT(kr::mat2, float);
-DECLARE_CONVERT(kr::mat2, double);
-DECLARE_CONVERT(kr::mat3, float);
-DECLARE_CONVERT(kr::mat3, double);
-DECLARE_CONVERT(kr::mat4, float);
-DECLARE_CONVERT(kr::mat4, double);
+DECLARE_CONVERT(kr::Mat2, float);
+DECLARE_CONVERT(kr::Mat2, double);
+DECLARE_CONVERT(kr::Mat3, float);
+DECLARE_CONVERT(kr::Mat3, double);
+DECLARE_CONVERT(kr::Mat4, float);
+DECLARE_CONVERT(kr::Mat4, double);
 } // namespace yaml
 
 #endif // KR_MATH_YAMLCPP_CONVERSIONS
