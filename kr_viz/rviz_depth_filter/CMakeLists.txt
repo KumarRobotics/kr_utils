@@ -44,7 +44,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${Qt4_INCLUDE_DIR}
-  ${QGRE_INCLUDE_DIRS}
+  ${Ogre_INCLUDE_DIRS}
 )
 
 add_definitions("-Wall -Wunused -std=c++11")
@@ -67,5 +67,5 @@ add_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${QT_LIBRARIES}
   ${catkin_LIBRARIES}
-  ${OGRE_LIBRARIES}
+  ${Ogre_LIBRARIES}
 )

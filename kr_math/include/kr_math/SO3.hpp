@@ -28,8 +28,8 @@ namespace kr {
  * @note Assumes matrix is of the form: (world) = Rz * Ry * Rx (body).
  */
 template <typename T>
-kr::vec3<T> rotToEulerZYX(const kr::mat3<T>& R) {
-  kr::vec3<T> rpy;
+kr::Vec3<T> rotToEulerZYX(const kr::Mat3<T>& R) {
+  kr::Vec3<T> rpy;
 
   T sth = -R(2, 0);
   if (sth > 1) {
@@ -63,11 +63,11 @@ kr::vec3<T> rotToEulerZYX(const kr::mat3<T>& R) {
  *   about the x-axis.
  */
 template <typename T>
-kr::mat3<T> rotX(T angle) {
+kr::Mat3<T> rotX(T angle) {
   const T c = std::cos(angle);
   const T s = std::sin(angle);
 
-  kr::mat3<T> R;
+  kr::Mat3<T> R;
 
   R(0, 0) = 1;
   R(0, 1) = R(0, 2) = 0;
@@ -88,11 +88,11 @@ kr::mat3<T> rotX(T angle) {
  *   about the y axis.
  */
 template <typename T>
-kr::mat3<T> rotY(T angle) {
+kr::Mat3<T> rotY(T angle) {
   const T c = std::cos(angle);
   const T s = std::sin(angle);
 
-  kr::mat3<T> R;
+  kr::Mat3<T> R;
 
   R(1, 1) = 1;
   R(1, 0) = R(1, 2) = 0;
@@ -113,11 +113,11 @@ kr::mat3<T> rotY(T angle) {
  *   about the z axis.
  */
 template <typename T>
-kr::mat3<T> rotZ(T angle) {
+kr::Mat3<T> rotZ(T angle) {
   const T c = std::cos(angle);
   const T s = std::sin(angle);
 
-  kr::mat3<T> R;
+  kr::Mat3<T> R;
 
   R(2, 2) = 1;
   R(2, 0) = R(2, 1) = 0;
@@ -139,8 +139,8 @@ kr::mat3<T> rotZ(T angle) {
  *          [-w1  w3   0]
  */
 template <typename Scalar>
-kr::mat3<Scalar> skewSymmetric(const kr::vec3<Scalar>& w) {
-  kr::mat3<Scalar> W;
+kr::Mat3<Scalar> skewSymmetric(const kr::Vec3<Scalar>& w) {
+  kr::Mat3<Scalar> W;
   W(0, 0) = 0;
   W(0, 1) = -w(2);
   W(0, 2) = w(1);
@@ -159,8 +159,8 @@ kr::mat3<Scalar> skewSymmetric(const kr::vec3<Scalar>& w) {
  *  w ->  S(w)^2
  */
 template <typename Scalar>
-kr::mat3<Scalar> skewSymmetric2(const kr::vec3<Scalar>& w) {
-  kr::mat3<Scalar> W2;
+kr::Mat3<Scalar> skewSymmetric2(const kr::Vec3<Scalar>& w) {
+  kr::Mat3<Scalar> W2;
   W2(0, 0) = -(w[2] * w[2] + w[1] * w[1]);
   W2(1, 1) = -(w[2] * w[2] + w[0] * w[0]);
   W2(2, 2) = -(w[1] * w[1] + w[0] * w[0]);
@@ -175,19 +175,18 @@ kr::mat3<Scalar> skewSymmetric2(const kr::vec3<Scalar>& w) {
  * @return Unit quaternion rerpresenting the same rotation
  */
 template <typename Scalar>
-Eigen::Quaternion<Scalar> rodriguesToQuat(const kr::vec3<Scalar>& r) {
+kr::Quat<Scalar> rodriguesToQuat(const kr::Vec3<Scalar>& r) {
   const Scalar r_norm = r.norm();
-  kr::vec3<Scalar> r_normalized(0.0, 0.0, 0.0);
+  kr::Vec3<Scalar> r_normalized(0.0, 0.0, 0.0);
   if (r_norm > std::numeric_limits<Scalar>::epsilon() * 10) {
     r_normalized = r / r_norm;
   }
-  return Eigen::Quaternion<Scalar>(
-      Eigen::AngleAxis<Scalar>(r_norm, r_normalized));
+  return kr::Quat<Scalar>(Eigen::AngleAxis<Scalar>(r_norm, r_normalized));
 }
 
 template <typename Scalar>
-Eigen::Quaternion<Scalar> rodriguesToQuat(Scalar rx, Scalar ry, Scalar rz) {
-  return rodriguesToQuat(kr::vec3<Scalar>(rx, ry, rz));
+kr::Quat<Scalar> rodriguesToQuat(Scalar rx, Scalar ry, Scalar rz) {
+  return rodriguesToQuat(kr::Vec3<Scalar>(rx, ry, rz));
 }
 
 }  // namespace kr

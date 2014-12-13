@@ -49,7 +49,7 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${OpenCV_INCLUDE_DIR}
   ${Qt4_INCLUDE_DIR}
-  ${QGRE_INCLUDE_DIRS}
+  ${Ogre_INCLUDE_DIRS}
 )
 
 add_definitions("-Wall -Wunused -std=c++11")
