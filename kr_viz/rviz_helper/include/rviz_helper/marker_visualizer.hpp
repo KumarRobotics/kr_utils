@@ -127,12 +127,15 @@ class TrajectoryVisualizer : public MarkerVisualizer {
 class CovarianceVisualizer : public MarkerVisualizer {
  public:
   CovarianceVisualizer(const ros::NodeHandle &nh,
-                       const std::string &topic = "covariance");
+                       const std::string &topic = "covariance",
+                       bool transforms_orientation = false);
 
   void PublishCovariance(const PoseWithCovariance &pose_cov,
                          const std_msgs::Header &header);
   void PublishCovariance(const PoseWithCovarianceStamped &pose_cov_stamped);
   void PublishCovariance(const nav_msgs::Odometry &odometry);
+private:
+  bool transform_orientation_{false};
 };
 
 /**

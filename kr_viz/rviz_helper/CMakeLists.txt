@@ -3,6 +3,9 @@ project(rviz_helper)
 
 add_definitions(-Wall -std=c++11)
 
+find_package(cmake_modules)
+find_package(Eigen REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
     roscpp tf2_ros
     std_msgs geometry_msgs nav_msgs visualization_msgs
@@ -12,6 +15,7 @@ catkin_package(
     INCLUDE_DIRS include
     LIBRARIES rviz_helper
     CATKIN_DEPENDS std_msgs geometry_msgs nav_msgs roscpp visualization_msgs tf2_ros
+    DEPENDS Eigen
     )
 
 include_directories(
