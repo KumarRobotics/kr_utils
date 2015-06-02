@@ -110,5 +110,6 @@ void PoseVisualizer::PublishPose(const geometry_msgs::Pose &pose,
   tf_pub_.PublishTransform(pose, header);
 }
 
+
 }  // namespace viz
 }  // namespace kr

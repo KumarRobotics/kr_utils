@@ -16,6 +16,7 @@ public:
     Marker();
     Marker(const visualization_msgs::Marker &mark) {mark_ = mark;}
     operator visualization_msgs::Marker() {return mark_;}
+    operator visualization_msgs::MarkerArray();
 
     // set marker properties using chained structure:
     // ex: mahkah.color(kr::viz::colors::Pink).frame_id("sim")
@@ -23,9 +24,11 @@ public:
     Marker& color(const std_msgs::ColorRGBA &col);
     Marker& scale(const geometry_msgs::Vector3 &sca);
     Marker& scale(double x, double y, double z);
+    Marker& scale(double s);
+    Marker& mesh(const std::string &resource);
 private:
     int getUniqueId();
-;
+
 private:
     visualization_msgs::Marker mark_;
 }; // class Marker

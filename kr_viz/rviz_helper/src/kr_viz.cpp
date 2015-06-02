@@ -6,7 +6,7 @@ namespace viz {
 
 // // // // // // // KR Marker // // // // // // // // // // // // // // //
 
-Marker::getUniqueId() {
+int Marker::getUniqueId() {
     static int id=0;
     return id++;
 }
@@ -29,7 +29,7 @@ Marker::Marker(){
     mark_.scale.z = 1.0;
 
     mark_.type = visualization_msgs::Marker::SPHERE;
-    mark_.header.stamp = ros::Time();
+    mark_.header.stamp = ros::Time::now();
 }
 
 
@@ -55,6 +55,9 @@ Marker& Marker::scale(double x, double y, double z){
     mark_.scale.z = z;
     return *this;
 }
+Marker& Marker::scale(double s){
+    return scale(s,s,s);
+}
 
 MarkerArray MarkerArray::operator +(const MarkerArray &array) {
     for(auto &mark:array.array_)
@@ -75,9 +78,38 @@ VizManager & VizManager::instance() {
     static VizManager man;
     return man;
 }
-MarkerPubHandle::MarkerPubHandle():  manager_(VizManager::instance()) {
+MarkerPubHandle::MarkerPubHandle(const std::string &topic):  manager_(VizManager::instance()), pub_(manager_.getPublisher(topic)) {
 }
+ros::Publisher& VizManager::getPublisher(const std::string &topic) {
+    auto element = publishers_.find(topic);
+    if(element == publishers_.end()) {
+        publishers_[topic] = nh_priv_.advertise<visualization_msgs::MarkerArray>(topic.c_str(),10,this);
+        return publishers_[topic];
+    } else {
+        return element->second;
+    }
 
+}
+Marker::operator visualization_msgs::MarkerArray(){
+    MarkerArray array;
+    array.push_back(*this);
+    return array;
+}
+MarkerArray::operator visualization_msgs::MarkerArray(){
+    visualization_msgs::MarkerArray array;
+    for(auto & mark: array_)
+        array.markers.push_back(mark);
+    return array;
+}
+void MarkerArray::push_back(const Marker &mark) {
+    array_.push_back(mark);
+}
+MarkerArray::MarkerArray() {}
+Marker& Marker::mesh(const std::string &resource) {
+    mark_.mesh_resource = resource;
+    mark_.type = visualization_msgs::Marker::MESH_RESOURCE;
+    return *this;
+}
 
 
 }  // namespace viz

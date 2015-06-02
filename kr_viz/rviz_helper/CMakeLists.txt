@@ -29,9 +29,15 @@ add_library(${PROJECT_NAME}
     src/kr_viz.cpp
     )
 target_link_libraries(${PROJECT_NAME}
-    ${catkin_LIBRARIES}
+    ${catkin_LIBRARIES}    
     )
 
 add_dependencies(${PROJECT_NAME}
     ${catkin_EXPORTED_TARGETS}
+    )
+
+add_executable(sample_viz samples/sample_viz.cpp)
+target_link_libraries(sample_viz
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES}
     )
