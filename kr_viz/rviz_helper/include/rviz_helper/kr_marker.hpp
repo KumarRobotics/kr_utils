@@ -12,52 +12,56 @@ namespace viz {
 // Defines visualization marker with better default syntax and coloring
 
 class Marker {
-public:
-    Marker();
-    Marker(const visualization_msgs::Marker &mark) {mark_ = mark;}
-    operator visualization_msgs::Marker() {return mark_;}
-    operator visualization_msgs::MarkerArray();
+ public:
+  Marker();
+  Marker(const visualization_msgs::Marker &mark) { mark_ = mark; }
+  operator visualization_msgs::Marker() { return mark_; }
+  operator visualization_msgs::MarkerArray();
 
-    // set marker properties using chained structure:
-    // ex: mahkah.color(kr::viz::colors::Pink).frame_id("sim")
-    Marker& color(const rviz::Color &col);
-    Marker& color(const std_msgs::ColorRGBA &col);
-    Marker& scale(const geometry_msgs::Vector3 &sca);
-    Marker& scale(double x, double y, double z);
-    Marker& scale(double s);
-    Marker& mesh(const std::string &resource);
-private:
-    int getUniqueId();
+  // set marker properties using chained structure:
+  // ex: mahkah.color(kr::viz::colors::Pink).frame_id("sim")
+  Marker &color(const rviz::Color &col);
+  Marker &color(const std_msgs::ColorRGBA &col);
+  Marker &scale(const geometry_msgs::Vector3 &sca);
+  Marker &scale(double x, double y, double z);
+  Marker &scale(double s);
+  Marker &mesh(const std::string &resource);
+  Marker &type(int32_t tp);
+  Marker &point_push_back(const geometry_msgs::Point &pt);
+  Marker &position(const geometry_msgs::Point pose);
+  Marker &alpha(double a);
+ private:
+  int getUniqueId();
 
-private:
-    visualization_msgs::Marker mark_;
-}; // class Marker
+ private:
+  visualization_msgs::Marker mark_;
+};  // class Marker
 
 class MarkerArray {
-public:
-    MarkerArray();
-    MarkerArray(const visualization_msgs::MarkerArray &array);
+ public:
+  MarkerArray();
+  MarkerArray(const visualization_msgs::MarkerArray &array);
+  // hollow rectangle
+  MarkerArray(double lx, double ly, double lz, double ux, double uy, double uz,
+              rviz::Color col);
 
-    MarkerArray operator+(const MarkerArray &array);
-    MarkerArray operator+(const Marker &marker);
+  MarkerArray operator+(const MarkerArray &array);
+  MarkerArray operator+(const Marker &marker);
+  MarkerArray operator+=(const MarkerArray &array);
+  MarkerArray operator+=(const Marker &marker);
 
-    operator visualization_msgs::MarkerArray();
+  operator visualization_msgs::MarkerArray();
 
-    void push_back(const Marker &mark);
-    Marker & at(int pos);
-    const Marker & at(int pos) const;
-private:
-    std::vector<Marker> array_;
+  void push_back(const Marker &mark);
+  Marker &at(int pos);
+  const Marker &at(int pos) const;
+  int size() { return array_.size(); }
+
+ private:
+  std::vector<Marker> array_;
 };
-
-
-
 
 }  // namespace viz
 }  // namespace kr
 
-
-
-
-
-#endif // KR_MARKER_HPP
+#endif  // KR_MARKER_HPP

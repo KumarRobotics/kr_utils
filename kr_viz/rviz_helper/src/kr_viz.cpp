@@ -55,8 +55,15 @@ Marker& Marker::scale(double x, double y, double z){
     mark_.scale.z = z;
     return *this;
 }
+Marker& Marker::position(const geometry_msgs::Point pose) {
+    mark_.pose.position = pose;
+    return *this;
+}
 Marker& Marker::scale(double s){
     return scale(s,s,s);
+}
+Marker& Marker::alpha(double a) {
+  mark_.color.a = a;
 }
 
 MarkerArray MarkerArray::operator +(const MarkerArray &array) {
@@ -68,7 +75,15 @@ MarkerArray MarkerArray::operator +(const Marker &mark) {
     array_.push_back(mark);
     return *this;
 }
-
+MarkerArray MarkerArray::operator +=(const MarkerArray &array) {
+    for(auto &mark:array.array_)
+        array_.push_back(mark);
+    return *this;
+}
+MarkerArray MarkerArray::operator +=(const Marker &marker) {
+    array_.push_back(marker);
+    return *this;
+}
 // // // // // // // Viz Manager // // // // // // // // // // // // // // //
 
 VizManager::VizManager() : nh_(""), nh_priv_("~") {
@@ -110,7 +125,74 @@ Marker& Marker::mesh(const std::string &resource) {
     mark_.type = visualization_msgs::Marker::MESH_RESOURCE;
     return *this;
 }
+Marker& Marker::type(int32_t tp) {
+    mark_.type = tp;
+    return *this;
+}
+Marker& Marker::point_push_back(const geometry_msgs::Point &pt) {
+    mark_.points.push_back(pt);
+    return *this;
+}
 
+MarkerArray::MarkerArray(double lx, double ly, double lz,
+                         double ux, double uy, double uz, rviz::Color col) {
+    kr::viz::Marker mark_lines;
+    kr::viz::Marker mark_points;
+
+    geometry_msgs::Point p000;
+    geometry_msgs::Point p001;
+    geometry_msgs::Point p010;
+    geometry_msgs::Point p011;
+    geometry_msgs::Point p100;
+    geometry_msgs::Point p101;
+    geometry_msgs::Point p110;
+    geometry_msgs::Point p111;
+
+    p000.x = lx; p000.y = ly; p000.z = lz;
+    p001.x = lx; p001.y = ly; p001.z = uz;
+    p010.x = lx; p010.y = uy; p010.z = lz;
+    p011.x = lx; p011.y = uy; p011.z = uz;
+    p100.x = ux; p100.y = ly; p100.z = lz;
+    p101.x = ux; p101.y = ly; p101.z = uz;
+    p110.x = ux; p110.y = uy; p110.z = lz;
+    p111.x = ux; p111.y = uy; p111.z = uz;
+
+    // edges
+    mark_lines.type(visualization_msgs::Marker::LINE_LIST).color(col);
+    mark_lines.point_push_back(p000);    mark_lines.point_push_back(p001);
+    mark_lines.point_push_back(p000);    mark_lines.point_push_back(p010);
+    mark_lines.point_push_back(p000);    mark_lines.point_push_back(p100);
+
+    mark_lines.point_push_back(p001);    mark_lines.point_push_back(p101);
+    mark_lines.point_push_back(p001);    mark_lines.point_push_back(p011);
+
+    mark_lines.point_push_back(p010);    mark_lines.point_push_back(p110);
+    mark_lines.point_push_back(p010);    mark_lines.point_push_back(p011);
+
+    mark_lines.point_push_back(p100);    mark_lines.point_push_back(p110);
+    mark_lines.point_push_back(p100);    mark_lines.point_push_back(p101);
+
+    mark_lines.point_push_back(p011);    mark_lines.point_push_back(p111);
+    mark_lines.point_push_back(p101);    mark_lines.point_push_back(p111);
+    mark_lines.point_push_back(p110);    mark_lines.point_push_back(p111);
+
+    // corners
+    mark_points.type(visualization_msgs::Marker::SPHERE_LIST).color(col);
+    mark_points.point_push_back(p000);
+    mark_points.point_push_back(p001);
+    mark_points.point_push_back(p010);
+    mark_points.point_push_back(p011);
+    mark_points.point_push_back(p100);
+    mark_points.point_push_back(p101);
+    mark_points.point_push_back(p110);
+    mark_points.point_push_back(p111);
+
+    mark_lines.scale(0.1);
+    mark_points.scale(0.1);
+
+    array_.push_back(mark_lines);
+    array_.push_back(mark_points);
+}
 
 }  // namespace viz
 }  // namespace kr
