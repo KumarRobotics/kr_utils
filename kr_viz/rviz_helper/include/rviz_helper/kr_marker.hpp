@@ -30,6 +30,7 @@ class Marker {
   Marker &point_push_back(const geometry_msgs::Point &pt);
   Marker &position(const geometry_msgs::Point pose);
   Marker &alpha(double a);
+  Marker &action(u_int8_t a);
  private:
   int getUniqueId();
 
@@ -53,9 +54,25 @@ class MarkerArray {
   operator visualization_msgs::MarkerArray();
 
   void push_back(const Marker &mark);
+  void push_back(const MarkerArray &mark);
+
   Marker &at(int pos);
   const Marker &at(int pos) const;
-  int size() { return array_.size(); }
+  int size() const { return array_.size(); }
+
+  //batch marker operation
+
+  MarkerArray &color(const rviz::Color &col);
+  MarkerArray &color(const std_msgs::ColorRGBA &col);
+  MarkerArray &scale(const geometry_msgs::Vector3 &sca);
+  MarkerArray &scale(double x, double y, double z);
+  MarkerArray &scale(double s);
+  MarkerArray &mesh(const std::string &resource);
+  MarkerArray &type(int32_t tp);
+  MarkerArray &point_push_back(const geometry_msgs::Point &pt);
+  MarkerArray &position(const geometry_msgs::Point pose);
+  MarkerArray &alpha(double a);
+  MarkerArray &action(u_int8_t a);
 
  private:
   std::vector<Marker> array_;
