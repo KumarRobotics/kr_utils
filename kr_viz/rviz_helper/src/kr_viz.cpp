@@ -215,6 +215,10 @@ MarkerArray::MarkerArray(double lx, double ly, double lz, double ux, double uy,
   array_.push_back(mark_lines);
   array_.push_back(mark_points);
 }
+MarkerArray::MarkerArray(const visualization_msgs::MarkerArray &array) {
+  for(auto &mark:array.markers)
+    array_.push_back(mark);
+}
 
 // batch opperations
 void MarkerArray::push_back(const MarkerArray &ma) {
