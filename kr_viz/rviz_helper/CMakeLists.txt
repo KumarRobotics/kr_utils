@@ -27,6 +27,7 @@ include_directories(
 add_library(${PROJECT_NAME}
     src/marker_visualizer.cpp
     src/kr_viz.cpp
+    src/marker_covarience.cpp
     )
 target_link_libraries(${PROJECT_NAME}
     ${catkin_LIBRARIES}    

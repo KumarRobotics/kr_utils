@@ -5,6 +5,8 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <rviz_helper/colors.hpp>
+#include <eigen3/Eigen/Geometry>
+#include <geometry_msgs/PoseWithCovariance.h>
 
 namespace kr {
 namespace viz {
@@ -31,6 +33,9 @@ class Marker {
   Marker &position(const geometry_msgs::Point pose);
   Marker &alpha(double a);
   Marker &action(u_int8_t a);
+  Marker &covariance(const Eigen::Matrix3d &cov);
+  Marker &covariance(const geometry_msgs::PoseWithCovariance &pose_cov);
+
  private:
   int getUniqueId();
 

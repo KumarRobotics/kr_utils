@@ -133,39 +133,12 @@ MarkerArray::MarkerArray(double lx, double ly, double lz, double ux, double uy,
   kr::viz::Marker mark_lines;
   kr::viz::Marker mark_points;
 
-  geometry_msgs::Point p000;
-  geometry_msgs::Point p001;
-  geometry_msgs::Point p010;
-  geometry_msgs::Point p011;
-  geometry_msgs::Point p100;
-  geometry_msgs::Point p101;
-  geometry_msgs::Point p110;
-  geometry_msgs::Point p111;
+  geometry_msgs::Point p000, p001, p010, p011, p100, p101, p110, p111;
 
-  p000.x = lx;
-  p000.y = ly;
-  p000.z = lz;
-  p001.x = lx;
-  p001.y = ly;
-  p001.z = uz;
-  p010.x = lx;
-  p010.y = uy;
-  p010.z = lz;
-  p011.x = lx;
-  p011.y = uy;
-  p011.z = uz;
-  p100.x = ux;
-  p100.y = ly;
-  p100.z = lz;
-  p101.x = ux;
-  p101.y = ly;
-  p101.z = uz;
-  p110.x = ux;
-  p110.y = uy;
-  p110.z = lz;
-  p111.x = ux;
-  p111.y = uy;
-  p111.z = uz;
+  p000.x = lx, p000.y = ly, p000.z = lz, p001.x = lx, p001.y = ly, p001.z = uz,
+  p010.x = lx, p010.y = uy, p010.z = lz, p011.x = lx, p011.y = uy, p011.z = uz,
+  p100.x = ux, p100.y = ly, p100.z = lz, p101.x = ux, p101.y = ly, p101.z = uz,
+  p110.x = ux, p110.y = uy, p110.z = lz, p111.x = ux, p111.y = uy, p111.z = uz;
 
   // edges
   mark_lines.type(visualization_msgs::Marker::LINE_LIST).color(col);
@@ -216,14 +189,12 @@ MarkerArray::MarkerArray(double lx, double ly, double lz, double ux, double uy,
   array_.push_back(mark_points);
 }
 MarkerArray::MarkerArray(const visualization_msgs::MarkerArray &array) {
-  for(auto &mark:array.markers)
-    array_.push_back(mark);
+  for (auto &mark : array.markers) array_.push_back(mark);
 }
 
 // batch opperations
 void MarkerArray::push_back(const MarkerArray &ma) {
-  for(uint i = 0 ; i < ma.size(); i++)
-    array_.push_back(ma.at(i));
+  for (uint i = 0; i < ma.size(); i++) array_.push_back(ma.at(i));
 }
 
 MarkerArray &MarkerArray::color(const rviz::Color &col) {
@@ -271,12 +242,8 @@ MarkerArray &MarkerArray::action(u_int8_t a) {
   return *this;
 }
 
-const Marker & MarkerArray::at(int pos) const {
-  return array_.at(pos);
-}
-Marker & MarkerArray::at(int pos){
-  return array_.at(pos);
-}
+const Marker &MarkerArray::at(int pos) const { return array_.at(pos); }
+Marker &MarkerArray::at(int pos) { return array_.at(pos); }
 
 }  // namespace viz
 }  // namespace kr
