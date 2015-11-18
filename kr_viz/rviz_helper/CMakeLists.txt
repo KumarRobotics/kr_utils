@@ -26,11 +26,19 @@ include_directories(
 
 add_library(${PROJECT_NAME}
     src/marker_visualizer.cpp
+    src/kr_viz.cpp
+    src/marker_covarience.cpp
     )
 target_link_libraries(${PROJECT_NAME}
-    ${catkin_LIBRARIES}
+    ${catkin_LIBRARIES}    
     )
 
 add_dependencies(${PROJECT_NAME}
     ${catkin_EXPORTED_TARGETS}
+    )
+
+add_executable(sample_viz samples/sample_viz.cpp)
+target_link_libraries(sample_viz
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES}
     )
