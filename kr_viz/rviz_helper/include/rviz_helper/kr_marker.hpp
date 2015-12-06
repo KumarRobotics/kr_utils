@@ -63,7 +63,7 @@ class MarkerArray {
 
   Marker &at(int pos);
   const Marker &at(int pos) const;
-  int size() const { return array_.size(); }
+  size_t size() const { return array_.size(); }
 
   //batch marker operation
 
