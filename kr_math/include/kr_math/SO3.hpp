@@ -29,8 +29,6 @@ namespace kr {
  */
 template <typename T>
 kr::Vec3<T> rotToEulerZYX(const kr::Mat3<T>& R) {
-  kr::Vec3<T> rpy;
-
   T sth = -R(2, 0);
   if (sth > 1) {
     sth = 1;
@@ -50,6 +48,45 @@ kr::Vec3<T> rotToEulerZYX(const kr::Mat3<T>& R) {
     psi = std::atan2(R(1, 0), R(0, 0));
   }
 
+  kr::Vec3<T> rpy;
+  rpy[0] = phi;    //  x, [-pi,pi]
+  rpy[1] = theta;  //  y, [-pi/2,pi/2]
+  rpy[2] = psi;    //  z, [-pi,pi]
+  return rpy;
+}
+
+/**
+ * @brief Get the roll, pitch, yaw angles from a quaternion.
+ * @param q Quaternion.
+ * @return 3x1 Vector with elements [roll,pitch,yaw] about [x,y,z] axes.
+ *
+ * @note Assumes quaternion represents rotation of the form:
+ * (world) = Rz * Ry * Rx (body).
+ */
+template <typename T>
+kr::Vec3<T> quatToEulerZYX(const kr::Quat<T>& q) {
+  T q0 = q.w(), q1 = q.x(), q2 = q.y(), q3 = q.z();
+
+  T sth = 2 * (q0 * q2 - q1 * q3);
+  if (sth > 1) {
+    sth = 1;
+  } else if (sth < -1) {
+    sth = -1;
+  }
+
+  const T theta = std::asin(sth);
+  const T cth = std::sqrt(static_cast<T>(1) - sth * sth);
+
+  T phi, psi;
+  if(cth < std::numeric_limits<T>::epsilon() * 10) {
+    phi = std::atan2(2 * (q1*q2 - q0*q3), q0*q0 - q1*q1 + q2*q2 - q3*q3);
+    psi = 0;
+  } else {
+    phi = std::atan2(2 * (q0*q1 + q2*q3), q0*q0 - q1*q1 - q2*q2 + q3*q3);
+    psi = std::atan2(2 * (q1*q2 + q0*q3), q0*q0 + q1*q1 - q2*q2 - q3*q3);
+  }
+
+  kr::Vec3<T> rpy;
   rpy[0] = phi;    //  x, [-pi,pi]
   rpy[1] = theta;  //  y, [-pi/2,pi/2]
   rpy[2] = psi;    //  z, [-pi,pi]
@@ -134,9 +171,9 @@ kr::Mat3<T> rotZ(T angle) {
 /**
  *  @brief Create a skew-symmetric matrix from a 3-element vector.
  *  @note Performs the operation:
- *  w   ->  [  0 -w2  w1]
- *          [ w2   0 -w3]
- *          [-w1  w3   0]
+ *  w   ->  [  0 -w3  w2]
+ *          [ w3   0 -w1]
+ *          [-w2  w1   0]
  */
 template <typename Scalar>
 kr::Mat3<Scalar> skewSymmetric(const kr::Vec3<Scalar>& w) {
@@ -187,6 +224,29 @@ kr::Quat<Scalar> rodriguesToQuat(const kr::Vec3<Scalar>& r) {
 template <typename Scalar>
 kr::Quat<Scalar> rodriguesToQuat(Scalar rx, Scalar ry, Scalar rz) {
   return rodriguesToQuat(kr::Vec3<Scalar>(rx, ry, rz));
+}
+
+/**
+ * @brief Get quaternion given the roll, pitch, yaw angles.
+ * @param roll Rotation angle about X axis.
+ * @param pitch Rotation angle about Y axis.
+ * @param yaw Rotation angle about Z axis.
+ * @return Quaternion representing rotation of the form:
+ *   (world) = Rz(yaw) * Ry(pitch) * Rx(roll) * (body).
+ */
+template <typename Scalar>
+kr::Quat<Scalar> eulerZYXToQuat(Scalar roll, Scalar pitch, Scalar yaw) {
+  Scalar c1 = std::cos(roll/2), s1 = std::sin(roll/2);
+  Scalar c2 = std::cos(pitch/2), s2 = std::sin(pitch/2);
+  Scalar c3 = std::cos(yaw/2), s3 = std::sin(yaw/2);
+
+  kr::Quat<Scalar> q;
+  q.w() = c1*c2*c3 + s1*s2*s3;
+  q.x() = s1*c2*c3 - c1*s2*s3;
+  q.y() = c1*s2*c3 + s1*c2*s3;
+  q.z() = c1*c2*s3 - s1*s2*c3;
+
+  return q;
 }
 
 }  // namespace kr

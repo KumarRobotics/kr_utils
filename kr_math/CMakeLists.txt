@@ -2,14 +2,16 @@ cmake_minimum_required(VERSION 2.8.3)
 project(kr_math)
 
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs)
+  cmake_modules geometry_msgs)
 
 # Find Eigen
-find_package(cmake_modules)
 find_package(Eigen REQUIRED)
 
+list(APPEND INCLUDE_DIRS "include" ${EIGEN_INCLUDE_DIRS})
+
 include("cmake/extras.cmake")
-include_directories(include ${EIGEN_INCLUDE_DIRS})
+
+include_directories(${INCLUDE_DIRS})
 
 catkin_package(
   INCLUDE_DIRS include

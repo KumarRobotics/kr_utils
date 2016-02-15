@@ -320,7 +320,7 @@ namespace __internal {
 inline FILE* get_standard_stream(const std::ostream& stream) {
   if (&stream == &std::cout)
     return stdout;
-  else if (&stream == &std::cerr)
+  else if ((&stream == &std::cerr) || (&stream == &std::clog))
     return stderr;
   return nullptr;
 }

@@ -152,7 +152,7 @@ Scalar triangulationDepthSigma(Scalar depth, const kr::Vec2<Scalar> &obs,
   const Scalar beta = std::acos(-a.normalized().dot(t));
   const Scalar pixel_error = 1;
   const Scalar beta_plus = beta + 2*std::atan(pixel_error/(2*focal_length));
-  const Scalar gamma = static_cast<float>(M_PI) - alpha - beta_plus;
+  const Scalar gamma = static_cast<Scalar>(M_PI) - alpha - beta_plus;
   const Scalar p_plus_norm = t_norm * std::sin(beta_plus)/std::sin(gamma);
   const Scalar sigma = std::abs(p_plus_norm - p.norm());
   return sigma;

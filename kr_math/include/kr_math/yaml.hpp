@@ -20,13 +20,6 @@
 #include <kr_math/base_types.hpp>
 #include <yaml-cpp/yaml.h>
 
-#if !defined(KR_MATH_BUILD_ROS) || defined(KR_MATH_ROS_indigo)
-#define KR_MATH_USE_NEW_YAMLCPP
-#endif
-
-#ifdef KR_MATH_USE_NEW_YAMLCPP
-//  Suppress yaml-cpp .5 API on hydro.
-
 namespace kr {
 
 /**
@@ -72,7 +65,6 @@ static bool decodeMat(const YAML::Node &node, kr::Mat<Scalar, Rows, Cols> &M) {
 }
 } // namespace kr
 
-#endif //   KR_MATH_USE_NEW_YAMLCPP
 
 /**
  * @brief Emitter operator for static-size matrices.
@@ -95,7 +87,6 @@ YAML::Emitter& operator << (YAML::Emitter& out, const kr::Mat<Scalar,Rows,Cols>&
   return out;
 }
 
-#ifdef KR_MATH_USE_NEW_YAMLCPP
 #define DECLARE_CONVERT(cname, sname)                                          \
   template <> struct convert<cname<sname>> {                                   \
     static Node encode(const cname<sname> &rhs) { return kr::encodeMat(rhs); } \
@@ -103,9 +94,6 @@ YAML::Emitter& operator << (YAML::Emitter& out, const kr::Mat<Scalar,Rows,Cols>&
       return kr::decodeMat(node, rhs);                                         \
     }                                                                          \
   }
-#else
-#define DECLARE_CONVERT(a,b)
-#endif
 
 namespace YAML {
 
