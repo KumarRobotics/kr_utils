@@ -8,8 +8,21 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Eigen REQUIRED)
 
 list(APPEND INCLUDE_DIRS "include" ${EIGEN_INCLUDE_DIRS})
+list(APPEND PACKAGE_DEPENDS "Eigen")
 
-include("cmake/extras.cmake")
+# GTSAM
+find_package(GTSAM)
+if(${GTSAM_FOUND})
+  set(GTSAM_INCLUDE_DIRS ${GTSAM_INCLUDE_DIR})
+  set(GTSAM_LIBRARIES gtsam)
+
+  list(APPEND INCLUDE_DIRS ${GTSAM_INCLUDE_DIRS})
+  list(APPEND EXTERNAL_LIBS ${GTSAM_LIBRARIES})
+  list(APPEND PACKAGE_DEPENDS "GTSAM")
+endif()
+
+configure_file("cmake/extras.cmake.in" "cmake/extras.cmake" @ONLY)
+include("${CMAKE_CURRENT_BINARY_DIR}/cmake/extras.cmake")
 
 include_directories(${INCLUDE_DIRS})
 
@@ -17,7 +30,7 @@ catkin_package(
   INCLUDE_DIRS include
   CATKIN_DEPENDS geometry_msgs
   CFG_EXTRAS "extras.cmake"
-  DEPENDS Eigen
+  DEPENDS ${PACKAGE_DEPENDS}
 )
 
 # Mark header files for installation
@@ -32,5 +45,6 @@ if(CATKIN_ENABLE_TESTING)
     )
   target_link_libraries(gtest_all
     ${catkin_LIBRARIES}
-    ${GTEST_LIBRARIES})
+    ${GTEST_LIBRARIES}
+    ${EXTERNAL_LIBS})
 endif()

@@ -12,6 +12,15 @@
 #ifndef KR_MATH_POSE_H_
 #define KR_MATH_POSE_H_
 
+/* GTSAM include first since it needs to be included before Eigen as they
+ * have a custom Eigen version where they overload some Eigen classes. Having it
+ * after the Eigen include prevents their Eigen header being included due to
+ * header guards
+ */
+#ifdef KR_MATH_GTSAM_CONVERSIONS
+#include <gtsam/geometry/Pose3.h>
+#endif
+
 #include "base_types.hpp"
 #include <Eigen/Geometry>
 
