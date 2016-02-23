@@ -209,7 +209,7 @@ kr::Mat3<Scalar> skewSymmetric2(const kr::Vec3<Scalar>& w) {
 
 /**
  * @brief rodriguesToQuat Convert rodrigues parameters to quaternion
- * @return Unit quaternion rerpresenting the same rotation
+ * @return Unit quaternion representing the same rotation
  */
 template <typename Scalar>
 kr::Quat<Scalar> rodriguesToQuat(const kr::Vec3<Scalar>& r) {
@@ -247,6 +247,28 @@ kr::Quat<Scalar> eulerZYXToQuat(Scalar roll, Scalar pitch, Scalar yaw) {
   q.z() = c1*c2*s3 - s1*s2*c3;
 
   return q;
+}
+
+/**
+ * @brief Get rotation matrix given the roll, pitch, yaw angles.
+ * @param roll Rotation angle about X axis.
+ * @param pitch Rotation angle about Y axis.
+ * @param yaw Rotation angle about Z axis.
+ * @return Rotation matrix representing rotation of the form:
+ *   (world) = Rz(yaw) * Ry(pitch) * Rx(roll) * (body).
+ */
+template <typename Scalar>
+kr::Mat3<Scalar> eulerZYXToRot(Scalar roll, Scalar pitch, Scalar yaw) {
+  const Scalar c1 = std::cos(roll), s1 = std::sin(roll);
+  const Scalar c2 = std::cos(pitch), s2 = std::sin(pitch);
+  const Scalar c3 = std::cos(yaw), s3 = std::sin(yaw);
+
+  kr::Mat3<Scalar> R;
+  R << c2*c3, -c1*s3 + s1*s2*c3,  s1*s3 + c1*s2*c3,
+       c2*s3,  c1*c3 + s1*s2*s3, -s1*c3 + c1*s2*s3,
+         -s2,             s1*c2,             c1*c2;
+
+  return R;
 }
 
 }  // namespace kr
