@@ -22,6 +22,7 @@ if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(gtest_kr_common
     test/gtest_kr_common.cpp
     test/test_ros_helper.cpp
+    test/test_type_name.cpp
     )
   target_link_libraries(gtest_kr_common
     ${catkin_LIBRARIES}
