@@ -18,16 +18,6 @@ include_directories(
     ${catkin_INCLUDE_DIRS}
     )
 
-add_executable(test_timer test/test_timer.cpp)
-add_executable(test_pretty_print test/test_pretty_print.cpp)
-add_executable(test_pretty_printer test/test_pretty_printer.cpp)
-add_executable(test_profiler test/test_profiler.cpp)
-add_executable(test_sample test/test_sample.cpp)
-add_executable(test_termcolor test/test_termcolor.cpp)
-add_executable(test_url_parser test/test_url_parser.cpp)
-target_link_libraries(test_url_parser ${catkin_LIBRARIES})
-
-
 if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(gtest_kr_common
     test/gtest_kr_common.cpp
