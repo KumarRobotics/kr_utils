@@ -10,10 +10,13 @@ include(${QT_USE_FILE})
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rviz
-  nav_msgs
+  std_msgs
+  geometry_msgs
   sensor_msgs
   cv_bridge
   kr_cmake_modules
+  image_geometry
+  message_generation
 )
 
 # OpenCV
@@ -27,7 +30,16 @@ generate_messages(DEPENDENCIES
   geometry_msgs
 )
 
-catkin_package()
+catkin_package(CATKIN_DEPENDS
+  roscpp
+  rviz
+  std_msgs
+  geometry_msgs
+  sensor_msgs
+  cv_bridge
+  kr_cmake_modules
+  image_geometry
+  message_runtime)
 
 set(${PROJECT_NAME}_SOURCES
   src/ba_display.cpp
