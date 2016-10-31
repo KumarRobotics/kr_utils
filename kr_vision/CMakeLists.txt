@@ -12,7 +12,10 @@ catkin_package(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-# todo: build source files here, if necessary
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
 
 if(CATKIN_ENABLE_TESTING)
   # todo: test stuff

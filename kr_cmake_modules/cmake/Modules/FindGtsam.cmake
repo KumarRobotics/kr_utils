@@ -75,6 +75,10 @@ if(Gtsam_HINTS AND EXISTS ${Gtsam_HINTS})
     set(Gtsam_LIBRARY_DIR_HINTS ${Gtsam_HINTS}/lib)
 endif()
 
+# Mark internally as found, then verify. Gtsam_REPORT_NOT_FOUND() unsets
+# if called.
+set(Gtsam_FOUND TRUE)
+
 set(Gtsam_INCLUDE_FILE gtsam/config.h)
 # Search supplied hint directories first if supplied.
 find_path(Gtsam_INCLUDE_DIR
@@ -96,10 +100,6 @@ if(NOT Gtsam_LIBRARY OR NOT EXISTS ${Gtsam_LIBRARY})
 Gtsam_REPORT_NOT_FOUND("Could not find gtsam library, "
     "set Gtsam_LIBRARY to full path to libgtsam.")
 endif()
-
-# Mark internally as found, then verify. Gtsam_REPORT_NOT_FOUND() unsets
-# if called.
-set(Gtsam_FOUND TRUE)
 
 # Catch case when caller has set Gtsam_INCLUDE_DIR in the cache / GUI and
 # thus FIND_[PATH/LIBRARY] are not called, but specified locations are

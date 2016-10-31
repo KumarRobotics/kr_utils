@@ -3,7 +3,7 @@ project(rviz_helper)
 
 add_definitions(-Wall -std=c++11)
 
-find_package(cmake_modules)
+find_package(cmake_modules REQUIRED)
 find_package(Eigen REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -41,4 +41,14 @@ add_executable(sample_viz samples/sample_viz.cpp)
 target_link_libraries(sample_viz
     ${PROJECT_NAME}
     ${catkin_LIBRARIES}
+    )
+
+install(TARGETS ${PROJECT_NAME}
+    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+    )
+
+install(DIRECTORY include/${PROJECT_NAME}/
+    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
     )

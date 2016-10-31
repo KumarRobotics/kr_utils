@@ -18,6 +18,11 @@ include_directories(
     ${catkin_INCLUDE_DIRS}
     )
 
+install(
+    DIRECTORY include/${PROJECT_NAME}/
+    DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+    )
+
 if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(gtest_kr_common
     test/gtest_kr_common.cpp
