@@ -31,7 +31,9 @@ class MarkerVisualizer {
    * @param topic Topic name
    */
   MarkerVisualizer(const ros::NodeHandle &nh, const std::string &topic)
-      : nh_(nh), pub_(nh_.advertise<Marker>(topic, 1)) {}
+      : nh_(nh), pub_(nh_.advertise<Marker>(topic, 1)) {
+    SetAlpha(1.0); // default alpha to visible
+  }
 
   /**
    * @brief setColor Set marker color
