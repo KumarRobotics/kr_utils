@@ -5,8 +5,9 @@
 #include <visualization_msgs/Marker.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <rviz_helper/colors.hpp>
-#include <eigen3/Eigen/Geometry>
+#include <Eigen/Core>
 #include <geometry_msgs/PoseWithCovariance.h>
+
 
 namespace kr {
 namespace viz {

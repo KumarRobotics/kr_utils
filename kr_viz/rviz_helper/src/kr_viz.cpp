@@ -92,7 +92,7 @@ ros::Publisher &VizManager::getPublisher(const std::string &topic) {
   auto element = publishers_.find(topic);
   if (element == publishers_.end()) {
     publishers_[topic] = nh_priv_.advertise<visualization_msgs::MarkerArray>(
-        topic.c_str(), 10, this);
+        topic.c_str(), 10);
     return publishers_[topic];
   } else {
     return element->second;

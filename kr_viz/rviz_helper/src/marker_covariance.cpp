@@ -1,4 +1,5 @@
 #include <rviz_helper/kr_marker.hpp>
+#include <Eigen/Geometry>
 
 namespace kr {
 namespace viz {
