@@ -77,7 +77,7 @@ void CovarianceVisualizer::PublishCovariance(const PoseWithCovariance &pose_cov,
     Vector3d S = SVD.singularValues();
     
     //  U is a rotation matrix of the ellipse, convert to quaternion
-    Eigen::Quaterniond quat(U);
+    Eigen::Quaterniond quat(U*U.determinant());
     quat.normalize();
     
     marker_.pose.orientation.w = quat.w();
