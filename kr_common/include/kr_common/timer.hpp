@@ -1,5 +1,5 @@
 #ifndef KR_COMMON_TIMER_HPP_
-#define KR_COMMON_TIEMR_HPP_
+#define KR_COMMON_TIMER_HPP_
 
 #include <chrono>
 #include <string>
