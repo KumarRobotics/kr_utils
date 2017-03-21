@@ -28,7 +28,6 @@ srv_gen/
 srv_gen/*
 
 # ROS GENERATED PYTHON
-_*.py
 _*.pyc
 
 # ROS BAG FILES
