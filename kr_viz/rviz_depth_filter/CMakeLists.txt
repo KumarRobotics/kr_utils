@@ -1,10 +1,7 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.8.12)
 project(rviz_depth_filter)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wunused -std=c++11")
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -17,6 +14,22 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(Ogre REQUIRED)
 
+# Qt
+add_definitions(-DQT_NO_KEYWORDS)
+
+## We'll use the version that rviz used so they are compatible.
+if(rviz_QT_VERSION VERSION_LESS "5")
+  message(STATUS "Using Qt4 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
+  find_package(Qt4 COMPONENTS QtCore QtGui)
+  include(${QT_USE_FILE})
+else()
+  message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
+  find_package(Qt5 ${rviz_QT_VERSION} EXACT REQUIRED Core Widgets)
+  ## make target_link_libraries(${QT_LIBRARIES}) pull in all required dependencies
+  set(QT_LIBRARIES Qt5::Widgets)
+endif()
+
+
 add_message_files(DIRECTORY msg)
 generate_messages(DEPENDENCIES
   std_msgs
@@ -24,44 +37,35 @@ generate_messages(DEPENDENCIES
   geometry_msgs
 )
 
-catkin_package()
+catkin_package(LIBRARIES ${PROJECT_NAME}
+  INCLUDE_DIRS include
+  CATKIN_DEPENDS roscpp rviz std_msgs sensor_msgs geometry_msgs
+  DEPENDS Ogre)
 
-set(${PROJECT_NAME}_SOURCES
-  src/depth_filter_display.cpp
-)
-
-set(${PROJECT_NAME}_HEADERS
-  include/rviz_depth_filter/depth_filter_display.h
-)
-
-# invoke MOC and UI
-QT4_WRAP_CPP(${PROJECT_NAME}_MOCSrcs ${${PROJECT_NAME}_HEADERS})
-
-# QT Declarations
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${Qt4_INCLUDE_DIR}
   ${Ogre_INCLUDE_DIRS}
 )
 
-add_definitions("-Wall -Wunused -std=c++11")
-
-set(PROJECT_SOURCE_FILES
-  ${${PROJECT_NAME}_SOURCES}
-  ${${PROJECT_NAME}_MOCSrcs}
+set(${PROJECT_NAME}_MOC_HEADERS
+  include/rviz_depth_filter/depth_filter_display.h
 )
 
+if(rviz_QT_VERSION VERSION_LESS "5")
+  qt4_wrap_cpp(${PROJECT_NAME}_MOCSrcs ${${PROJECT_NAME}_MOC_HEADERS})
+else()
+  qt5_wrap_cpp(${PROJECT_NAME}_MOCSrcs ${${PROJECT_NAME}_MOC_HEADERS})
+endif()
+
 add_library(${PROJECT_NAME}
-  ${PROJECT_SOURCE_FILES}
+  src/depth_filter_display.cpp
+  ${${PROJECT_NAME}_MOCSrcs}
 )
 
 add_dependencies(${PROJECT_NAME}
   ${${PROJECT_NAME}_EXPORTED_TARGETS}
   ${catkin_EXPORTED_TARGETS}
-  ${PROJECT_NAME}_gencpp
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -78,4 +82,8 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY include/${PROJECT_NAME}/
     DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+    )
+
+install(FILES plugin_description.xml
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     )
