@@ -32,6 +32,7 @@ class Marker {
   Marker &type(int32_t tp);
   Marker &point_push_back(const geometry_msgs::Point &pt);
   Marker &position(const geometry_msgs::Point pose);
+  Marker &position(double x, double y, double z);
   Marker &alpha(double a);
   Marker &action(u_int8_t a);
   Marker &covariance(const Eigen::Matrix3d &cov);
@@ -77,6 +78,7 @@ class MarkerArray {
   MarkerArray &type(int32_t tp);
   MarkerArray &point_push_back(const geometry_msgs::Point &pt);
   MarkerArray &position(const geometry_msgs::Point pose);
+  MarkerArray &position(double x, double y, double z);
   MarkerArray &alpha(double a);
   MarkerArray &action(u_int8_t a);
 

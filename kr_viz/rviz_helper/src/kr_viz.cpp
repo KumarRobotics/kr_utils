@@ -20,7 +20,7 @@ Marker::Marker() {
 
   mark_.pose.orientation.w = 1;
   mark_.ns = "viz";
-  mark_.header.frame_id = "world";
+  mark_.header.frame_id = "map";
   mark_.id = getUniqueId();
   mark_.action = visualization_msgs::Marker::ADD;
 
@@ -55,6 +55,12 @@ Marker &Marker::scale(double x, double y, double z) {
 }
 Marker &Marker::position(const geometry_msgs::Point pose) {
   mark_.pose.position = pose;
+  return *this;
+}
+Marker &Marker::position(double x, double y, double z) {
+  mark_.pose.position.x = x;
+  mark_.pose.position.y = y;
+  mark_.pose.position.z = z;
   return *this;
 }
 Marker &Marker::scale(double s) { return scale(s, s, s); }
@@ -231,6 +237,10 @@ MarkerArray &MarkerArray::point_push_back(const geometry_msgs::Point &pt) {
 }
 MarkerArray &MarkerArray::position(const geometry_msgs::Point pose) {
   for (auto &mark : array_) mark.position(pose);
+  return *this;
+}
+MarkerArray &MarkerArray::position(double x, double y, double z) {
+  for (auto &mark : array_) mark.position(x,y,z);
   return *this;
 }
 MarkerArray &MarkerArray::alpha(double a) {
