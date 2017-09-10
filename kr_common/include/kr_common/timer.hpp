@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <iostream>
 #include <thread>
+#include <cmath>
 
 namespace kr {
 
@@ -96,8 +97,12 @@ class Timer {
     elapsed_ = std::chrono::duration_cast<DurationType>(
         std::chrono::high_resolution_clock::now() - start_);
     assert(running_);
+    auto prev_avg = iteration_ > 0 ? total_ / iteration_ : elapsed_;
     total_ += elapsed_;
     ++iteration_;
+    auto const n = iteration_;
+    auto const x = elapsed_ - prev_avg;
+    variance_ = (n - 1) * (variance_ + x.count() * x.count() / n) / n;
     min_ = std::min(elapsed_, min_);
     max_ = std::max(elapsed_, max_);
     running_ = false;
@@ -138,6 +143,14 @@ class Timer {
   }
 
   /**
+   * @brief StdDev, standard deviation of the recorded times
+   */
+  template <typename T = DurationType>
+  double StdDev() const {
+    return std::sqrt(variance_) * Ratio<DurationType, T>();
+  }
+
+  /**
    * @brief Reset timer
    */
   void Reset() {
@@ -174,7 +187,7 @@ class Timer {
   void Report(std::ostream& os = std::cout) const {
     os << name_ << " - iterations: " << iteration_
        << ", unit: " << DurationUnit<T>() << ", average: " << Average<T>()
-       << " "
+       << ", stdev: " << StdDev<T>()
        << ", min: " << Min<T>() << ", max: " << Max<T>() << std::endl;
   }
 
@@ -188,6 +201,7 @@ class Timer {
   DurationType max_{DurationType::min()};
   DurationType elapsed_{0};
   DurationType total_{0};
+  double variance_{0};
 };
 
 typedef Timer<sec> TimerSec;
