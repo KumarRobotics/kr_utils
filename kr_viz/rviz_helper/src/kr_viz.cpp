@@ -63,6 +63,27 @@ Marker &Marker::position(double x, double y, double z) {
   mark_.pose.position.z = z;
   return *this;
 }
+Marker &Marker::orientation(double dx, double dy, double dz) {
+  double n = std::sqrt(dx*dx + dy*dy + dz*dz);
+  if(n <1e-4){
+    mark_.pose.orientation.w = 1.0;
+    mark_.pose.orientation.x = 0.0;
+    mark_.pose.orientation.y = 0.0;
+    mark_.pose.orientation.z = 0.0;
+  } else if(dz > -0.999) {
+    double r = 1.0/std::sqrt(2.0+2.0*dz);
+    mark_.pose.orientation.w = r*(1+dz);
+    mark_.pose.orientation.x = -r*dy;
+    mark_.pose.orientation.y = r*dx;
+    mark_.pose.orientation.z = 0.0;
+  } else {
+    mark_.pose.orientation.w = 0.0;
+    mark_.pose.orientation.x = 1.0;
+    mark_.pose.orientation.y = 0.0;
+    mark_.pose.orientation.z = 0.0;
+  }
+  return *this;
+}
 Marker &Marker::scale(double s) { return scale(s, s, s); }
 Marker &Marker::alpha(double a) {
   mark_.color.a = a;

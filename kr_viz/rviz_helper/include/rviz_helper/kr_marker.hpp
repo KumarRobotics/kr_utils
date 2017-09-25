@@ -33,6 +33,7 @@ class Marker {
   Marker &point_push_back(const geometry_msgs::Point &pt);
   Marker &position(const geometry_msgs::Point pose);
   Marker &position(double x, double y, double z);
+  Marker &orientation(double dx, double dy, double dz);
   Marker &alpha(double a);
   Marker &action(u_int8_t a);
   Marker &covariance(const Eigen::Matrix3d &cov);
