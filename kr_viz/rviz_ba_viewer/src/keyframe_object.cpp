@@ -7,16 +7,18 @@
 #include <rviz_ba_viewer/keyframe_object.hpp>
 
 #include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTextureManager.h>
 
 Ogre::TexturePtr textureFromMat(const cv::Mat& mat, const std::string& name) {
   assert(!mat.empty());
   //  place mat data into a stream for ogre
   Ogre::TexturePtr texture;
-  Ogre::DataStreamPtr data_stream;
-  data_stream.bind(new Ogre::MemoryDataStream((void *)mat.data,
-                                              mat.total() * mat.elemSize()));
+  Ogre::DataStreamPtr data_stream(
+      new Ogre::MemoryDataStream(mat.data, mat.total() * mat.elemSize()));
 
   const Ogre::String res_group =
       Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
@@ -31,7 +33,7 @@ Ogre::TexturePtr textureFromMat(const cv::Mat& mat, const std::string& name) {
 
 KeyFrameObject::KeyFrameObject(Ogre::SceneManager * scene_manager, int id) :
   id_(id), scene_manager_(scene_manager) {
-  
+
   //  create objects and nodes
   scene_node_ = scene_manager_->createSceneNode();
   scene_node_->setVisible(true);
@@ -39,9 +41,9 @@ KeyFrameObject::KeyFrameObject(Ogre::SceneManager * scene_manager, int id) :
   plane_object_ = scene_manager_->createManualObject();
   scene_node_->attachObject(frustum_object_);
   scene_node_->attachObject(plane_object_);
-    
+
   //  create a material
-  const Ogre::String& group = 
+  const Ogre::String& group =
       Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME;
   Ogre::MaterialManager& man = Ogre::MaterialManager::getSingleton();
   //  some boring settings...
@@ -52,8 +54,8 @@ KeyFrameObject::KeyFrameObject(Ogre::SceneManager * scene_manager, int id) :
   material_->setDepthWriteEnabled(true);
   material_->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
   //material_->setSceneBlending(Ogre::SBT_REPLACE);
-  //material_->setDepthBias(-16.0f, 0.0f); 
-  
+  //material_->setDepthBias(-16.0f, 0.0f);
+
   frustum_material_ = man.create("kf_mat_frust_" + std::to_string(id), group);
   frustum_material_->setReceiveShadows(false);
   frustum_material_->getTechnique(0)->setLightingEnabled(false);
@@ -95,7 +97,7 @@ void KeyFrameObject::setPose(const Ogre::Vector3& position,
   scene_node_->setOrientation(orientation);
 }
 
-void KeyFrameObject::setColor(const Ogre::Vector4& color) { 
+void KeyFrameObject::setColor(const Ogre::Vector4& color) {
   if (color_ != color) {
     color_ = color;
     dirty_ = true;
@@ -114,7 +116,7 @@ void KeyFrameObject::createGeometry() {
     return; //  no need to re-create geometry
   }
   dirty_ = false;
-  
+
   const double fx = cam_model_.fx(), fy = cam_model_.fy();
   const double cx = cam_model_.cx(), cy = cam_model_.cy();
   //  generate coordinates of the frustum
@@ -127,7 +129,7 @@ void KeyFrameObject::createGeometry() {
     points[i].y = (points[i].y - cy) / fy;
   }
   const Ogre::Vector3 centre(0,0,0);  //  optical centre
-  
+
   frustum_object_->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAIN);
   frustum_object_->begin(frustum_material_->getName(),
                          Ogre::RenderOperation::OT_LINE_LIST);
@@ -150,7 +152,7 @@ void KeyFrameObject::createGeometry() {
     }
   }
   frustum_object_->end();
-  
+
   if (imageEnabled_ && !texture_.isNull() && texture_->isLoaded()) {
     //  now the textured quad w/ our image
     //  first set up the material for textured drawing
@@ -165,7 +167,7 @@ void KeyFrameObject::createGeometry() {
     tex_unit->setTextureFiltering(Ogre::TFO_BILINEAR);
     tex_unit->setAlphaOperation(Ogre::LBX_SOURCE1, Ogre::LBS_MANUAL,
                                 Ogre::LBS_CURRENT, color_.w); //  use alpha
-    
+
     plane_object_->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAIN);
     plane_object_->begin(material_->getName(),
                          Ogre::RenderOperation::OT_TRIANGLE_LIST);
@@ -173,19 +175,19 @@ void KeyFrameObject::createGeometry() {
       //plane_object_->colour(1.0,0,0,1);
       plane_object_->position(points[0]); //  top left
       plane_object_->textureCoord(0,0);
-      
+
       plane_object_->position(points[1]); //  bottom left
       plane_object_->textureCoord(0,1);
-      
+
       plane_object_->position(points[2]); //  bottom right
       plane_object_->textureCoord(1,1);
-      
+
       plane_object_->position(points[2]); //  bottom right
       plane_object_->textureCoord(1,1);
-      
+
       plane_object_->position(points[3]); //  top right
       plane_object_->textureCoord(1,0);
-      
+
       plane_object_->position(points[0]); //  top left
       plane_object_->textureCoord(0,0);
     }
