@@ -101,8 +101,8 @@ class Timer {
     total_ += elapsed_;
     ++iteration_;
     auto const n = iteration_;
-    auto const x = elapsed_ - prev_avg;
-    variance_ = (n - 1) * (variance_ + x.count() * x.count() / n) / n;
+    auto const x = static_cast<double>((elapsed_ - prev_avg).count());
+    variance_ = (n - 1) * (variance_ + x * x / n) / n;
     min_ = std::min(elapsed_, min_);
     max_ = std::max(elapsed_, max_);
     running_ = false;
@@ -115,7 +115,7 @@ class Timer {
    */
   template <typename T = DurationType>
   double Elapsed() const {
-    return elapsed_.count() * Ratio<DurationType, T>();
+    return static_cast<double>(elapsed_.count()) * Ratio<DurationType, T>();
   }
 
   /**
@@ -123,7 +123,7 @@ class Timer {
    */
   template <typename T = DurationType>
   double Min() const {
-    return min_.count() * Ratio<DurationType, T>();
+    return static_cast<double>(min_.count()) * Ratio<DurationType, T>();
   }
 
   /**
@@ -131,7 +131,7 @@ class Timer {
    */
   template <typename T = DurationType>
   double Max() const {
-    return max_.count() * Ratio<DurationType, T>();
+    return static_cast<double>(max_.count()) * Ratio<DurationType, T>();
   }
 
   /**
@@ -139,7 +139,8 @@ class Timer {
    */
   template <typename T = DurationType>
   double Average() const {
-    return total_.count() * Ratio<DurationType, T>() / iteration_;
+    return static_cast<double>(total_.count()) * Ratio<DurationType, T>() /
+           iteration_;
   }
 
   /**
