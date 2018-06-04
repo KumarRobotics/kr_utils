@@ -20,7 +20,7 @@ add_definitions(-DQT_NO_KEYWORDS)
 ## We'll use the version that rviz used so they are compatible.
 if(rviz_QT_VERSION VERSION_LESS "5")
   message(STATUS "Using Qt4 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
-  find_package(Qt4 COMPONENTS QtCore QtGui)
+  find_package(Qt4 REQUIRED COMPONENTS QtCore QtGui)
   include(${QT_USE_FILE})
 else()
   message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
